@@ -1,0 +1,280 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+
+  font-family: 'Roboto', sans-serif;
+  height: 100vh;
+
+}
+
+.main-wrapper{
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 30px;
+  height: auto;
+  color: #fff;
+}
+
+.full-center {
+    float: left;
+    width: 25%;
+    height: 650px;
+box-sizing: border-box;
+  background-color: rgba(0,0,0,0.5);
+  margin: 0 auto;
+  margin-top: 10px;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  color:white;
+
+}
+
+.widget-block {
+  /*width: 770px;*/
+width: 100%;
+/*height: 480px;*/
+height: 100%;
+/*height: 80%;*/
+position: relative;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+ background: rgba(255,255,255,0.2);
+}
+
+.tmp{
+    position: absolute;
+    font-weight: 300;
+    font-size: 25px;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    top: 255px;
+    left: 0;
+    display: block;
+}
+
+.widg{
+    position: relative;
+    font-weight: 300;
+    font-size: 25px;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    top: 120px;
+    left: 0;
+    display: block;
+    
+}
+
+div.img-area {
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+  position: relative;
+  height: 100%;
+
+}
+.img-area img {
+  width: 100%;
+  height: 100%;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+  display: block;
+
+}
+.img-area .img-area-mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+  z-index: 2;
+  opacity: 0.5;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  filter: alpha(opacity=50);
+}
+.img-area .img-area-front {
+  z-index: 3;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.temperature {
+  text-align: center;
+
+  margin: 0;
+  font-size: 80px;
+  height: auto;
+  line-height: 200px;
+  position: relative;
+  font-weight: 100;
+}
+
+.temperature:before {
+  content: '';
+  left: 50px;
+  font-size: 60px;
+  position: relative;
+  top: -24px;
+  padding-right: 20px;
+}
+
+.temperature-feels {
+  font-size: 17px;
+  top: 20px;
+  position: absolute;
+  font-weight: 300;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  top: 15px;
+  left: 0;
+}
+
+.location,
+.today {
+  position: absolute;
+  font-weight: 300;
+  font-size: 25px;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  top: 15px;
+  left: 0;
+}
+.today {
+  font-size: 14px;
+  top: 50px;
+  color: rgba(255,255,255,0.85);
+}
+.weather-desc {
+  position: absolute;
+  text-align: center;
+  /*bottom: 35px;*/
+  top: 220px;
+  width: 100%;
+  backface-visibility: hidden;
+transform: translateZ(0);
+}
+.weather-desc > span {
+  display: inline-block;
+  padding: 5px 10px;
+  background: rgba(0,0,0,0.3);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 300;
+}
+.wind_description{
+  margin-top: 170%;
+  margin-left: 0px;
+  font-size: 20px;
+}
+
+.dail_widget{
+  position: absolute;
+}
+.daily_description{
+  margin-top: 35%;
+  font-size: 20px;
+  text-align: left;
+}
+
+.daily_temp{
+text-align: center;
+margin: 0;
+font-size: 50px;
+top:150px;
+line-height: 200px;
+position: relative;
+font-weight: 100;
+}
+
+.M_widget{
+  font-weight: 300;
+  font-size: 25px;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  margin-top: 60%;
+}
+
+.widg-desc{
+  margin-top: 80%;
+  width: 100%;
+}
+
+.daily_desc{
+  margin-top: 100%;
+  margin-left: 0px;
+  font-size: 20px;
+}
+.dailyWid{
+  position: relative;
+  font-weight: 300;
+  font-size: 25px;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  top: 120px;
+  left: 0;
+  display: block;
+}
+
+/*styling the carousel widget */
+.today-widg{
+position: relative;
+top: 20%;
+font-weight: 300;
+font-size: 25px;
+}
+.time{
+  position: absolute;
+  margin-top: 280px;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  font-size: 17px;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+.today-temperature{
+
+margin: 0;
+font-size: 70px;
+top:290px;
+text-align: center;
+line-height: 200px;
+position: relative;
+font-weight: 100;
+backface-visibility: hidden;
+transform: translateZ(0);
+}
+
+.today-wind{
+margin-top: 270px;
+font-size: 20px;
+text-align: left;
+display: inline-block;
+backface-visibility: hidden;
+transform: translateZ(0);
+}
+.widget{
+  position: relative;
+  font-weight: 300;
+  font-size: 25px;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  top: 95px;
+  left: 0;
+  display: block;
+}

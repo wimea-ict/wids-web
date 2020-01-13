@@ -1,0 +1,48 @@
+.formdiv{
+  width:500px;
+  margin:auto;
+  margin-top: 40px;background-color: lavender;
+  padding:40px;border-radius: 4px;
+}
+.form{
+  margin:auto;
+}
+.form input{
+  background-color: white;
+}
+.stepline{
+  height: 2px;width:500px;margin:auto;background-color: black;
+}
+.steps{
+  width:500px;
+  margin:auto;padding:0px;
+}
+.steps li{
+  display: inline;list-style-type: none;padding: 12px;font-size:30px;font-weight:bold;
+  border:1px solid black;background-color: white;border-radius:50px;padding-left: 20px;padding-right: 20px;
+  list-style-position: inside;
+  position:relative;top:-20px;
+}
+.steps li a{
+  text-decoration: none;
+}
+.left{
+
+}
+.center{
+ margin-left:170px;
+}
+.right{
+  margin-left:146px;
+}
+.formhead{
+  text-align:center;font-weight:bold;font-family: verdana;
+}
+.countryselect{
+  padding-top:100px;
+  padding-bottom:100px;
+}
+.countryselect select{
+  width:400px;
+  height: 40px;border:1px solid lightgray;
+}
