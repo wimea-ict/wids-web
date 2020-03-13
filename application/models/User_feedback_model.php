@@ -12,7 +12,7 @@ class User_feedback_model extends CI_Model
     public $id = 'id';
     public $order = 'DESC';
    
-	//public $issuetime = 'issuetime';
+    //public $issuetime = 'issuetime';
 
     function __construct()
     {
@@ -25,7 +25,7 @@ class User_feedback_model extends CI_Model
     {
         $this->db->order_by($this->id, $this->order);
        // return $this->db->get($this->table)->result();
-	   return $this->db->get($this->table)->result();
+       return $this->db->get($this->table)->result();
     }
 
     //get the userfeedback
@@ -38,6 +38,7 @@ class User_feedback_model extends CI_Model
       $this->db->select('user_feedback.id, user_feedback.city_id, user_feedback.city_id,user_feedback.sector,user_feedback.accuracy, user_feedback.applicability,user_feedback.timeliness,user_feedback.generalComment,user_feedback.contact,user_feedback.datetime,division.division_name,division.division_type');
       $this->db->from('user_feedback');
       $this->db->join('division','user_feedback.city_id = division.id');
+      $this->db->order_by('id',"DESC");
       //$this->db->where('minor_sector.major_id','major_sector.id');   
      $query=$this->db->get();   
       return $query->result_array();
@@ -45,7 +46,7 @@ class User_feedback_model extends CI_Model
   // get data by id
     function get_by_id($id)
     {  
-	
+    
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }
@@ -64,11 +65,11 @@ class User_feedback_model extends CI_Model
   // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id', $q);
-	$this->db->or_like('advisory', $q);
-	$this->db->or_like('date_from', $q);
-	$this->db->or_like('date_to', $q);
-	$this->db->or_like('issuetime', $q);
-	$this->db->from($this->table);
+    $this->db->or_like('advisory', $q);
+    $this->db->or_like('date_from', $q);
+    $this->db->or_like('date_to', $q);
+    $this->db->or_like('issuetime', $q);
+    $this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -76,11 +77,11 @@ class User_feedback_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
     $this->db->order_by($this->id, $this->order);
     $this->db->like('id', $q);
-	$this->db->or_like('advisory', $q);
-	$this->db->or_like('date_from', $q);
-	$this->db->or_like('date_to', $q);
-	$this->db->or_like('issuetime', $q);
-	$this->db->limit($limit, $start);
+    $this->db->or_like('advisory', $q);
+    $this->db->or_like('date_from', $q);
+    $this->db->or_like('date_to', $q);
+    $this->db->or_like('issuetime', $q);
+    $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 
@@ -117,9 +118,9 @@ class User_feedback_model extends CI_Model
     // update data
     function update($id, $data)
     {    //var_dump($data);
-	     //echo $id;  
-	     //exit;
-		 
+         //echo $id;  
+         //exit;
+         
          $sql = "UPDATE $this->table SET advisory = ?, date_from = ?, date_to = ?  WHERE decadal_id = $id";
         return $this->db->query($sql, $data);
     }
@@ -142,7 +143,7 @@ class User_feedback_model extends CI_Model
     }
 
         //bar graph for feedback
-    public function feedbackgraph($element_id){
+    public function feedbackgraph(){
         $query = "SELECT ROUND(AVG(accuracy), 2) as 'R' FROM user_feedback"; 
         $accuracy = $this->db->query($query)->result_array();
 
@@ -161,76 +162,69 @@ class User_feedback_model extends CI_Model
         return $data;
     }
 
-    public function ussdrequest($element_id){
-        $agriculture = "SELECT COUNT(Level0) as 'R' FROM ussdtransaction WHERE Level0 like 'agriculture%'"; 
-        $agric = $this->db->query($agriculture)->result_array();
+    public function ussdrequest(){
+        $dailyForecast = "SELECT COUNT(menuvalue) as 'R' FROM ussdtransaction_new WHERE menuvalue like 'Daily%'"; 
+        $dailyForecast = $this->db->query($dailyForecast)->result_array();
         
+        $seasonalForecast = "SELECT COUNT(menuvalue) as 'R' FROM ussdtransaction_new WHERE menuvalue like 'Seasonal%'"; 
+        $seasonalForecast = $this->db->query($seasonalForecast)->result_array();
+
+        $monthlyForecast = "SELECT COUNT(menuvalue) as 'R' FROM ussdtransaction_new WHERE menuvalue like 'Monthly%'"; 
+        $monthlyForecast = $this->db->query($monthlyForecast)->result_array();
         
-        $wea = "SELECT COUNT(Level0) as 'R' FROM ussdtransaction WHERE Level0 like 'weather%'"; 
-        $weather = $this->db->query($wea)->result_array();
-
-        $wa = "SELECT COUNT(Level0) as 'R' FROM ussdtransaction WHERE Level0 like 'water%'"; 
-        $water = $this->db->query($wa)->result_array();
-
-        $dis = "SELECT COUNT(Level0) as 'R' FROM ussdtransaction WHERE Level0 like 'disaster%'"; 
-        $disaster = $this->db->query($dis)->result_array();
-      
-        $hea = "SELECT COUNT(Level0) as 'R' FROM ussdtransaction WHERE Level0 like 'health%'"; 
-        $health = $this->db->query($hea)->result_array();
 
         $data = array(
-            array_merge(array('number'=>'Agriculture'),$agric[0]),
-            array_merge(array('number'=>'Weather'),$weather[0]),
-            array_merge(array('number'=>'Water'),$water[0]),
-            array_merge(array('number'=>'Disaster Preparedness'),$disaster[0]),
-            array_merge(array('number'=>'Health'),$health[0]),
+            array_merge(array('number'=>'Daily Forecast'),$dailyForecast[0]),
+            array_merge(array('number'=>'Seasonal Forecast'),$seasonalForecast[0]),
+            array_merge(array('number'=>'Monthly Forecast'),$monthlyForecast[0]),
+           
           
             
         );
         return $data;
     }
 
-    public function trend($element_id){
+    public function trend(){
          $currentYear =  date("Y");
          $prevYear = date("Y")-1;
          $last2Y = date('Y') -2;
         
          //last year
-         $agric = "SELECT Count(Level0) AS 'R' from ussdtransaction WHERE RecordDate like '$prevYear%' AND Level0 like 'agriculture%'";
+         $agric = "SELECT Count(menuvalue) AS 'R' from ussdtransaction_new WHERE date like '$prevYear%' AND menuvalue like 'Daily%'";
          $Lagric = $this->db->query($agric)->result_array();
         
-         $lwea = "SELECT Count(Level0) AS 'S' from ussdtransaction WHERE RecordDate like '$prevYear%' AND Level0 like 'weather%'";
+         $lwea = "SELECT Count(menuvalue) AS 'S' from ussdtransaction_new WHERE date like '$prevYear%' AND menuvalue like 'Seasonal%'";
          $Lweather = $this->db->query($lwea)->result_array();
 
-         $lDis = "SELECT Count(Level0) AS 'D' from ussdtransaction WHERE RecordDate like '$prevYear%' AND Level0 like 'Disaster%'";
+         $lDis = "SELECT Count(menuvalue) AS 'D' from ussdtransaction_new WHERE date like '$prevYear%' AND menuvalue like 'Monthly%'";
          $LDisaster = $this->db->query($lDis)->result_array();
 
-         $lFoo = "SELECT Count(Level0) AS 'W' from ussdtransaction WHERE RecordDate like '$prevYear%' AND Level0 like 'water%'";
-         $Lfoo = $this->db->query($lFoo)->result_array();
+         // $lFoo = "SELECT Count(Level0) AS 'W' from ussdtransaction WHERE RecordDate like '$prevYear%' AND Level0 like 'water%'";
+         // $Lfoo = $this->db->query($lFoo)->result_array();
          
-         $lwat = "SELECT Count(Level0) AS 'H' from ussdtransaction WHERE RecordDate like '$prevYear%' AND Level0 like 'health%'";
-         $Lwater = $this->db->query($lwat)->result_array();
+         // $lwat = "SELECT Count(Level0) AS 'H' from ussdtransaction WHERE RecordDate like '$prevYear%' AND Level0 like 'health%'";
+         // $Lwater = $this->db->query($lwat)->result_array();
         
                  
          //current year
-        $cur = "SELECT Count(Level0) AS 'R' from ussdtransaction WHERE RecordDate like '$currentYear%' AND Level0 like 'agriculture%'";
+        $cur = "SELECT Count(menuvalue) AS 'R' from ussdtransaction_new WHERE date like '$currentYear%' AND menuvalue like 'Daily%'";
         $AgricC = $this->db->query($cur)->result_array();
         
-         $curW = "SELECT Count(Level0) AS 'S' from ussdtransaction WHERE RecordDate like '$currentYear%' AND Level0 like 'weather%'";
+         $curW = "SELECT Count(menuvalue) AS 'S' from ussdtransaction_new WHERE date like '$currentYear%' AND menuvalue like 'Seasonal%'";
          $weather = $this->db->query($curW)->result_array();
 
-         $curD = "SELECT Count(Level0) AS 'D' from ussdtransaction WHERE RecordDate like '$currentYear%' AND Level0 like 'Disaster%'";
+         $curD = "SELECT Count(menuvalue) AS 'D' from ussdtransaction_new WHERE date like '$currentYear%' AND menuvalue like 'Monthly%'";
          $Disaster = $this->db->query($curD)->result_array();
 
-         $curWa = "SELECT Count(Level0) AS 'W' from ussdtransaction WHERE RecordDate like '$currentYear%' AND Level0 like 'water%'";
-         $water = $this->db->query($curWa)->result_array();
+         // $curWa = "SELECT Count(Level0) AS 'W' from ussdtransaction WHERE RecordDate like '$currentYear%' AND Level0 like 'water%'";
+         // $water = $this->db->query($curWa)->result_array();
 
-         $curH = "SELECT Count(Level0) AS 'H' from ussdtransaction WHERE RecordDate like '$currentYear%' AND Level0 like 'health%'";
-         $health = $this->db->query($curH)->result_array();
+         // $curH = "SELECT Count(Level0) AS 'H' from ussdtransaction WHERE RecordDate like '$currentYear%' AND Level0 like 'health%'";
+         // $health = $this->db->query($curH)->result_array();
         
          $data = array(
-             array_merge(array('average'=>$prevYear), $Lweather[0], $LDisaster[0], $Lfoo[0], $Lwater[0], $Lagric[0] ),
-             array_merge(array('average'=>$currentYear), $weather[0], $Disaster[0], $health[0], $water[0], $AgricC[0]),
+             array_merge(array('average'=>$prevYear), $Lweather[0], $LDisaster[0], $Lagric[0] ),
+             array_merge(array('average'=>$currentYear), $weather[0], $Disaster[0], $AgricC[0]),
          
          );
          return $data;

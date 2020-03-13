@@ -33,7 +33,7 @@
 		<?php echo anchor(site_url('index.php/region/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
 <!----------------------- Amoko -------------------------------------->
 
-		<?php echo anchor(site_url('index.php/season/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
+		<?php echo anchor(site_url('index.php/region/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
 
         <?php echo anchor(site_url('index.php/Region/displayform'), '<i class="fa fa-plus"></i> Add New', 'class="btn btn-primary btn-sm"'); ?>
 

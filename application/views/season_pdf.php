@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>harviacode.com - codeigniter crud generator</title>
+        <title>PDF</title>
         <link rel="stylesheet" href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css') ?>"/>
         <style>
             .word-table {
@@ -19,27 +19,25 @@
         <h2>Season List</h2>
         <table class="word-table" style="margin-bottom: 10px">
             <tr>
-                <th width="80px">No</th>
-                <th>Region</th>
-                <th>SubRegion</th>
-                <th>Season</th>
-                <th>Description</th>
-                <th>impact</th>
-                <th>Issue time</th>
+            <th width="80px">No.</th>
+		   		    <th>Season Name</th>
+                    <th>Abbreviation</th>
+                    <th>Month From</th>	
+                    <th>Month To</th>
+                   
 		
             </tr><?php
             foreach ($season_data as $season)
             {
-               $reg = $this->db->get_where('region',array('id'=>$season->region));
+              
                 ?>
                 <tr>
-		    <td><?php echo ++$start ?></td>
-			<td><?php  foreach ($reg->result() as $p){ echo $p->name ; }?></td>
-                    <td><?php echo $season->subRegion ?></td>
-                    <td><?php echo $season->season ?></td>
-                    <td><?php echo $season->description ?></td>
-                    <td><?php echo $season->impact ?></td>
-			<td><?php echo $season->issuetime ?></td>
+
+                <td><?php echo ++$start ?></td>
+			<td><?php  echo $season->season_name;?></td>
+             <td><?php  echo $season->abbreviation;?></td>
+             <td><?php  echo $season->month_from;?></td>
+             <td><?php  echo $season->month_to;?></td>
                 </tr>
                 <?php
             }

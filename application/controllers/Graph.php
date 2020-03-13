@@ -103,8 +103,8 @@ exit();        $this->load->view('template', $this->data);
     private function trendG($element_id){
         $morris = new MorrisBarCharts($element_id);
         $morris->xkey = array('average');
-        $morris->ykeys = array( 'S', 'D', 'W', 'H', 'R');
-        $morris->labels = array('Weather', 'Disaster', 'Water', 'Health', 'Agric');
+        $morris->ykeys = array( 'S', 'D', 'R');
+        $morris->labels = array('Seasonal', 'Monthly', 'Daily');
         $morris->stacked = false;
 
         $morris->data = $this->User_feedback_model->trend();

@@ -7,6 +7,7 @@ class Daily_forecast_model extends CI_Model
 {
 
     public $table = 'daily_forecast';
+    public $table1 = 'daily_advisory';
     public $id = 'id';
     public $order = 'DESC';
     public $date ='date';
@@ -16,29 +17,99 @@ class Daily_forecast_model extends CI_Model
         parent::__construct();
     }
 
+    function forecast_checker($date, $time)
+    {
+      $this->db->select('date, time');
+      $this->db->from('daily_forecast');
+      $this->db->where('date', $date);
+      $this->db->where('time',$time);
+      $query=$this->db->get();
+      return $query->result_array();
+    }
+    
+    function forecast_data_checker($region_id, $forecast_id)
+    {
+      $this->db->select('region_id');
+      $this->db->from('daily_forecast_data');
+      $this->db->where('region_id', $region_id);
+      $this->db->where('forecast_id', $forecast_id);
+      $query=$this->db->get();
+      return $query->result_array();
+    }
+
     // get all
     function get_all()
     {
-        $this->db->order_by($this->id, $this->order);
-        return $this->db->get($this->table)->result();
+      $this->db->select('daily_forecast.id,daily_forecast.date,daily_forecast.weather,daily_forecast.time,daily_forecast.issuedate,daily_forecast.validitytime, daily_forecast.dutyforecaster, ussdmenulanguage.language');
+      $this->db->from('daily_forecast');
+      $this->db->join('ussdmenulanguage','daily_forecast.language_id = ussdmenulanguage.id');
+       $this->db->order_by('daily_forecast.id', 'DESC');
+     $query=$this->db->get();
+   
+       return $query->result_array();
+        // $this->db->order_by($this->id, $this->order);
+        // return $this->db->get($this->table)->result();
     }
+      //------new query to fetch the forcast time data----------
+      //------new query to fetch the forcast time data----------
+      function get_forecast_time()
+    {   
+        $this->db->select('forecast_time.id,forecast_time.from_time,forecast_time.to_time,forecast_time.period_name');
+        $this->db->from('forecast_time');
+        $this->db->order_by('forecast_time.id', 'ASC');
+        $query=$this->db->get();
+   
+       return $query->result_array();
+  }
+    //---------------------get language available--------------------------------
+      function get_available_language()
+    {   
+       $this->db->select('language,id');
+     $this->db->from('ussdmenulanguage');
+     $query=$this->db->get();
+   
+       return $query->result_array();
+  }
+    //-----------------------------------------------------
 	//------advisories--------------------------------
-    function get_advice($division){
-        $this->db->select('message_summary, division_name, advice');
+   function get_advice($division){
+      $dateadded = date('Y-m-d');
+        $this->db->select('minor_sector.minor_name, daily_advisory.message_summary, division.division_name, daily_advisory.advice,daily_forecast.date');
         $this->db->from('daily_advisory');
         $this->db->join('daily_forecast_data', 'daily_advisory.forecast_id = daily_forecast_data.forecast_id');
-        $this->db->join('division','daily_forecast_data.division_id = division.id');
+        $this->db->join('daily_forecast','daily_forecast.id = daily_advisory.forecast_id');
+        $this->db->join('division','daily_forecast_data.region_id = division.region_id');
+        $this->db->join('minor_sector','minor_sector.id = daily_advisory.sector');
         $this->db->order_by('daily_advisory.id','DESC');
         $this->db->where('division.id', $division);
+        $this->db->where("daily_forecast.language_id", 1); 
+        $this->db->where('daily_forecast.date', $dateadded);
         $qy = $this->db->get();
         return $qy->result_array();
 
     }
-        public  function get_all_advisory()
+
+    public  function get_all_advisories()
     { 
         $this->db->select('minor_sector.minor_name, daily_advisory.id,daily_advisory.sector,daily_advisory.forecast_id,daily_advisory.advice,daily_advisory.message_summary,');
         $this->db->from('daily_advisory');
-        $this->db->join('minor_sector','minor_sector.id=daily_advisory.sector');  
+        $this->db->join('minor_sector','minor_sector.id=daily_advisory.sector'); 
+        $this->db->order_by('daily_advisory.dateadded', $this->order); 
+           
+        $query=$this->db->get();   
+       return $query->result_array();
+      
+    }
+        public  function get_all_advisory($id = NULL)
+    { 
+        $this->db->select('minor_sector.minor_name, daily_advisory.id,daily_advisory.sector,daily_advisory.forecast_id,daily_advisory.advice,daily_advisory.message_summary');
+        $this->db->from('daily_advisory');
+        $this->db->join('minor_sector','minor_sector.id=daily_advisory.sector'); 
+        $this->db->join('daily_forecast','daily_forecast.id=daily_advisory.forecast_id');  
+        $this->db->where("daily_forecast.language_id", 1); 
+        if($id != NULL){
+            $this->db->where('daily_forecast.id',$id);
+        }
         $this->db->order_by('daily_advisory.dateadded', $this->order); 
            
         $query=$this->db->get();   
@@ -57,18 +128,23 @@ class Daily_forecast_model extends CI_Model
        $this->db->join('daily_forecast','daily_advisory.forecast_id = daily_forecast.id');
       // $this->db->join('ussdsubregions','advisory.subregionid = ussdsubregions.subregionid');
      $this->db->where('daily_advisory.id',$id);
+     $this->db->where("daily_forecast.language_id", 1); 
      return $this->db->get()->result();
   }
     //----------------------------------------------
 	//get all area forecast
 	function get_daily_forecast_data($id){
-		 $this->db->select('daily_forecast_data.id, daily_forecast_data.mean_temp,daily_forecast_data.max_temp,daily_forecast_data.min_temp,daily_forecast_data.wind,daily_forecast_data.wind_direction,daily_forecast_data.wind_strength,division.division_name,region.region_name,weather_category.cat_name,daily_forecast_data.datetime,daily_forecast_data.forecast_id ');
-	$this->db->from(' daily_forecast_data');	
-	$this->db->join('division','division.id = daily_forecast_data.division_id');
+		 $this->db->select('forecast_time.period_name as time, daily_forecast_data.id, daily_forecast_data.mean_temp,daily_forecast_data.max_temp,daily_forecast_data.min_temp,daily_forecast_data.wind,daily_forecast_data.wind_direction,daily_forecast_data.wind_strength,region.region_name,weather_category.cat_name,daily_forecast_data.datetime,daily_forecast_data.forecast_id ');
+	$this->db->from(' daily_forecast_data');
+  $this->db->distinct("region.region_name");
 	$this->db->join('region','region.id = daily_forecast_data.region_id');
 	$this->db->join('weather_category','weather_category.id = daily_forecast_data.weather_cat_id');
-	$this->db->join('daily_forecast','daily_forecast.id = daily_forecast_data.forecast_id');	
-	$this->db->where("daily_forecast_data.forecast_id", $id);			
+	$this->db->join('daily_forecast','daily_forecast.id = daily_forecast_data.forecast_id');
+    $this->db->join('forecast_time','daily_forecast.time = forecast_time.id');
+
+    // $this->db->where("daily_forecast.language_id", 1); 	
+	$this->db->where("daily_forecast_data.forecast_id", $id);
+  //$this->db->order_by('forecast_time.id',"ASC");			
 	return $this->db->get()->result(); 
 		
     }
@@ -78,7 +154,8 @@ class Daily_forecast_model extends CI_Model
    $this->db->from(' impact_forecast');	
    $this->db->join('daily_forecast','daily_forecast.id = impact_forecast.forecast_id');
    $this->db->join('impacts','impacts.id = impact_forecast.impact_id');
-   $this->db->where("impact_forecast.forecast_id", $id);			
+   $this->db->where("impact_forecast.forecast_id", $id);
+   $this->db->where("daily_forecast.language_id", 1); 			
    return $this->db->get()->result(); 
        
    }
@@ -86,31 +163,50 @@ class Daily_forecast_model extends CI_Model
 //show data for the selected division	
 function get_daily_forecast_data_for_region1($forecast_id,$division_id){
 			
-	$this->db->select('daily_forecast_data.id, daily_forecast_data.mean_temp,daily_forecast_data.max_temp,daily_forecast_data.min_temp,daily_forecast_data.wind,daily_forecast_data.wind_direction,daily_forecast_data.wind_strength,division.division_name,region.region_name,weather_category.cat_name,daily_forecast_data.datetime,daily_forecast_data.forecast_id,daily_forecast.time');
+	$this->db->select('daily_forecast_data.id, daily_forecast_data.mean_temp,daily_forecast_data.max_temp,daily_forecast_data.min_temp,daily_forecast_data.wind,daily_forecast_data.wind_direction,daily_forecast_data.wind_strength,division.division_name,region.region_name,weather_category.cat_name,daily_forecast_data.datetime,daily_forecast_data.forecast_id,forecast_time.period_name as time');
 	$this->db->from(' daily_forecast_data');	
 	$this->db->join('division','division.id = daily_forecast_data.division_id');
 	$this->db->join('region','region.id = daily_forecast_data.region_id');
 	$this->db->join('weather_category','weather_category.id = daily_forecast_data.weather_cat_id');
-	$this->db->join('daily_forecast','daily_forecast.id = daily_forecast_data.forecast_id');	
-	$this->db->where("daily_forecast_data.forecast_id", $forecast_id);
-   $this->db->where("daily_forecast_data.division_id", $division_id);    
+	$this->db->join('daily_forecast','daily_forecast.id = daily_forecast_data.forecast_id');
+   $this->db->join('forecast_time','daily_forecast.time = forecast_time.id');
+  
+	// $this->db->where("daily_forecast_data.forecast_id", $forecast_id);
+    $this->db->where("daily_forecast.language_id", 1); 
+   $this->db->where("daily_forecast_data.division_id", $division_id); 
+    $this->db->order_by('forecast_time.id',"ASC");     
 	return $this->db->get()->result(); 	
     }
     
 	///////////////////////////////// ///////////////////////
    // Retrieves the data of the forecast
+   function get_daily_forecast_data_for_region_division($division_id){
+    $this->db->select('division_name');
+    $this->db->from('division');    
+    // $this->db->join('weather_category','daily_forecast_data.weather_cat_id = weather_category.id');
+
+    $this->db->where("id", $division_id);   
+
+    return $this->db->get()->result(); 
+        
+    }
    function get_daily_forecast_data_for_region($forecast_id,$division_id){
-    $this->db->select('daily_forecast.issuedate,daily_forecast.time, daily_forecast.validitytime,daily_forecast.weather,
+    $this->db->select('daily_forecast.issuedate,forecast_time.period_name as time,division.division_name, daily_forecast.validitytime,daily_forecast.weather,
         daily_forecast_data.max_temp,daily_forecast_data.min_temp, daily_forecast_data.mean_temp, daily_forecast_data.wind, daily_forecast_data.wind_direction, daily_forecast_data.wind_strength ,daily_forecast.datetime,
         weather_category.cat_name, weather_category.img');
-    $this->db->from('daily_forecast');    
-
+    $this->db->from('daily_forecast'); 
     $this->db->join('daily_forecast_data',' daily_forecast.id = daily_forecast_data.forecast_id');
-    $this->db->join('division','division.id = daily_forecast_data.division_id');
+
+   $this->db->join('forecast_time','daily_forecast.time = forecast_time.id');
+
+    $this->db->join('region','region.id = daily_forecast_data.region_id');
+    $this->db->join('division','division.region_id = region.id');
     $this->db->join('weather_category','daily_forecast_data.weather_cat_id = weather_category.id');
 
     $this->db->where("division.id", $division_id);
+    $this->db->where("daily_forecast.language_id", 1); 
     $this->db->where("daily_forecast.date", date('Y-m-d')); 
+     $this->db->order_by('forecast_time.id',"ASC"); 
     // $this->db->where("daily_forecast.id", $forecast_id);    
 
     return $this->db->get()->result(); 
@@ -119,20 +215,24 @@ function get_daily_forecast_data_for_region1($forecast_id,$division_id){
 
      function get_next_day_forecast_data_for_region($forecast_id,$division_id){
             
-    $this->db->select('daily_forecast.issuedate,daily_forecast.time, 
+    $this->db->select('daily_forecast.issuedate,daily_forecast.weather,forecast_time.period_name as time, 
         daily_forecast_data.max_temp,daily_forecast_data.min_temp, daily_forecast_data.mean_temp, daily_forecast_data.wind, daily_forecast_data.wind_direction, daily_forecast_data.wind_strength ,daily_forecast.datetime,
         weather_category.cat_name, weather_category.img');
     $this->db->from('daily_forecast');    
-
-    $this->db->join('daily_forecast_data',' daily_forecast.id = daily_forecast_data.forecast_id');
-    $this->db->join('division','division.id = daily_forecast_data.division_id');
-
+     $this->db->join('daily_forecast_data',' daily_forecast.id = daily_forecast_data.forecast_id');
+       
+    $this->db->join('region','region.id = daily_forecast_data.region_id');
+    $this->db->join('division','division.region_id = region.id');
     $this->db->join('weather_category','daily_forecast_data.weather_cat_id = weather_category.id');
 
+   $this->db->join('forecast_time','daily_forecast.time = forecast_time.id');
+ 
+
     $this->db->where("division.id", $division_id); 
+    $this->db->where("daily_forecast.language_id", 1); 
     $this->db->where("daily_forecast.date", date('Y-m-d', strtotime(' +1 day'))); 
     // $this->db->where("daily_forecast.id", $forecast_id);    
-
+      $this->db->order_by('forecast_time.id',"ASC"); 
     return $this->db->get()->result(); 
         
     }
@@ -150,11 +250,20 @@ function get_daily_forecast_data_for_region1($forecast_id,$division_id){
 	}
 
     // Returns forecast_id of the next day
-    function get_next_day_forecast(){
+    function get_next_day_forecast($dist){
     $next_date = date('Y-m-d', strtotime(' +1 day'));
-    $this->db->select('daily_forecast.id, daily_forecast.weather, daily_forecast.date, daily_forecast.time, daily_forecast.issuedate,daily_forecast.validitytime,daily_forecast.dutyforecaster, daily_forecast.datetime');
+    $this->db->select('daily_forecast.id, daily_forecast.weather, daily_forecast.date, forecast_time.period_name as time, daily_forecast.issuedate,daily_forecast.validitytime,daily_forecast.dutyforecaster, daily_forecast.datetime');
     $this->db->from('daily_forecast');  
+
+   $this->db->join('forecast_time','daily_forecast.time = forecast_time.id');
+
+     $this->db->join('daily_forecast_data',' daily_forecast.id = daily_forecast_data.forecast_id');
+     $this->db->join('division','division.region_id = daily_forecast_data.region_id');
+   
+    $this->db->where("daily_forecast.language_id", 1); 
     $this->db->where('daily_forecast.date',$next_date);
+    $this->db->where("division.id", $dist); 
+    $this->db->order_by('forecast_time.id',"ASC"); 
     return $this->db->get()->result(); 
         
     }
@@ -197,8 +306,11 @@ function get_daily_forecast_data_for_region1($forecast_id,$division_id){
     //get all replaced
   function get_all_replaced()
     {
-        $this->db->select('daily_forecast.id,daily_forecast.datetime,daily_forecast.weather,daily_forecast.date,daily_forecast.time,daily_forecast.issuedate,daily_forecast.validitytime,daily_forecast.dutyforecaster');
-	$this->db->from('daily_forecast');	
+        $this->db->select('daily_forecast.id,daily_forecast.datetime,daily_forecast.weather,daily_forecast.date,forecast_time.period_name as time,daily_forecast.issuedate,daily_forecast.validitytime,daily_forecast.dutyforecaster');
+	$this->db->from('daily_forecast');
+
+   $this->db->join('forecast_time','daily_forecast.time = forecast_time.id');
+   $this->db->order_by('forecast_time.id',"ASC");	
 	return $this->db->get()->result();
 	}
 	//other days
@@ -310,6 +422,14 @@ function get_daily_forecast_data_for_region1($forecast_id,$division_id){
     {
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
+        $this->db->where("forecast_id", $id);
+        $this->db->delete("daily_forecast_data");
+    }
+
+    function delete_ad($id)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->delete($this->table1);
     }
 
     function get_date(){

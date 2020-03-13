@@ -2,10 +2,13 @@
         <!-- Main content -->
 
          <section class="content-header">
+<!------------------------------- Amoko -------------------------->
                     <h1>
-                        Seasonal Forecast
+                        Seasons
                         <small>Data tables</small>
                     </h1>
+<!------------------------------- Amoko -------------------------->
+
                     <ol class="breadcrumb">
                         <li><a href="<?php echo base_url() ?>index.php/Landing/index"><i class="fa fa-dashboard"></i> Home</a></li>
                         <li><a href="#"><i class="fa fa-dashboard"></i> Seasons</a></li>
@@ -25,8 +28,12 @@
 					   
 				   }?>
 		<?php //echo anchor(site_url('index.php/season/excel'), ' <i class="fa fa-file-excel-o"></i> Excel', 'class="btn btn-primary btn-sm"'); ?>
-		<?php echo anchor(site_url('index.php/season/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
-		<?php echo anchor(site_url('index.php/season/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
+<!------------------------------- Amoko -------------------------->
+<!-- change the url -->
+		<?php echo anchor(site_url('index.php/season_names/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
+<!------------------------------- Amoko -------------------------->
+
+		<?php echo anchor(site_url('index.php/season_names/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
      
         <?php echo anchor(site_url('index.php/Season_names/displaySeasonNameForm'), '<i class="fa fa-plus"></i> Add New', 'class="btn btn-primary btn-sm"'); ?>
       

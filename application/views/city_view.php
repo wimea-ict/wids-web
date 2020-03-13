@@ -36,7 +36,7 @@ echo anchor('index.php/season/create/','Create',array('class'=>'btn btn-danger b
 <?php echo anchor(site_url('index.php/city/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
 
 
-<?php echo anchor(site_url('index.php/season/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
+<?php echo anchor(site_url('index.php/city/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
 
 <?php echo anchor(site_url('index.php/City/displayform'), '<i class="fa fa-plus"></i> Add New', 'class="btn btn-primary btn-sm"'); ?>
 

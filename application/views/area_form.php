@@ -3,6 +3,7 @@
             <div class='col-xs-12'>
               <div class='box'>
                 <div class='box-header'>
+
                   <?php
 
                  $sqlx = "SELECT * FROM  season_months WHERE  id = $add_id";
@@ -10,13 +11,32 @@
                             foreach ($sql2->result_array() as $row1) { ?>
                   <h3 class='box-title'> ADD <strong><?php echo $row1['abbreviation']; }?></strong> SEASONAL FORECAST AREA</h3>
                       <div class='box box-primary'>
-        <form action="<?php echo site_url('index.php/Season/SaveForecastArea'); ?>" method="post" enctype="multipart/form-data" ><table class='table table-bordered'>
+        <form action="<?php echo site_url('index.php/Season/SaveForecastArea').'/'.$this->uri->segment(3); ?>" method="post" enctype="multipart/form-data" ><table class='table table-bordered'>
+        <tr>
+        <td>Language</td>
+        <td>
+
+        <select name="language" id="language" class="form-control">
+           <?php
+         //print_r($available_language_data);exit(); 
+          if(isset($available_language_data)){
+         foreach($available_language_data as $dd){
+            //$expiry_time = $dd['to_time'];
+          ?> 
+          <option value="<?php  echo $dd['language_id'];?>"><?php echo $dd['language'];?></option>
+          <?php
+        } }
+        ?>
+        </select>
+        
+        </td>
+      </tr>
       <tr><td>Region <?php echo form_error('region_id') ?></td>
            <td> 
            <select name="region_id"  class="form-control" id="region_id">
             <?php 
 
-                 $sql1 = "SELECT * FROM  region";
+                 $sql1 = "SELECT * FROM  main_regions";
                             $sql3= $this->db->query($sql1);
                             foreach ($sql3->result_array() as $row2) { ?>
                            <option value="<?php echo $row2['id']; ?>"><?php echo $row2['region_name']; ?></option>
@@ -58,18 +78,18 @@
                     	</select>                  
                     
                     	<select name = "onset_start" >
-                           <option value="Jan">Jan</option>
-                            <option value="Feb">Feb</option>
-                            <option value="Mar">Mar</option>
-                            <option value="Apr">Apr</option>
+                        <option value="January">January</option>
+                           <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
                             <option value="May">May</option>
-                            <option value="Jun">Jun</option>
-                            <option value="Jul">Jul</option>
-                            <option value="Aug">Aug</option>
-                            <option value="Sept">Sept</option>
-                            <option value="Oct">Oct</option>
-                            <option value="Nov">Nov</option>
-                            <option value="Dec">Dec</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
 
                         </select>
                     </td></tr>  
@@ -86,18 +106,18 @@
                     
                     	</select>
                  <select name="expected_peak" >
-                            <option value="Jan">Jan</option>
-                            <option value="Feb">Feb</option>
-                            <option value="Mar">Mar</option>
-                            <option value="Apr">Apr</option>
+                           <option value="January">January</option>
+                           <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
                             <option value="May">May</option>
-                            <option value="Jun">Jun</option>
-                            <option value="Jul">Jul</option>
-                            <option value="Aug">Aug</option>
-                            <option value="Sept">Sept</option>
-                            <option value="Oct">Oct</option>
-                            <option value="Nov">Nov</option>
-                            <option value="Dec">Dec</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
                </select>
                 </td>
             </tr>          
@@ -114,30 +134,30 @@
                     	</select>
           
           		<select name="end_period">
-            		<option value="Jan">Jan</option>
-                    <option value="Feb">Feb</option>
-                    <option value="Mar">Mar</option>
-                    <option value="Apr">Apr</option>
-                    <option value="May">May</option>
-                    <option value="Jun">Jun</option>
-                    <option value="Jul">Jul</option>
-                    <option value="Aug">Aug</option>
-                    <option value="Sept">Sept</option>
-                    <option value="Oct">Oct</option>
-                    <option value="Nov">Nov</option>
-                    <option value="Dec">Dec</option>
+                            <option value="January">January</option>
+                           <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
          	 </select>
           </td>
       </tr>
      
 	    <tr>
         <td>Overall Comment <?php echo form_error('overall_comment') ?></td>
-        <td><textarea class="form-control" rows = "3" name="overall_comment" id="overall_comment" placeholder="Overall Comment" /> <?php echo $overall_comment; ?></textarea></td>
+        <td><textarea class="form-control" rows = "10" name="overall_comment" id="overall_comment" placeholder="Overall Comment" /> <?php echo $overall_comment; ?></textarea></td>
      </tr>
-      <tr >
-       <td>General information <?php echo form_error('general_info') ?></td>
-        <td><textarea class="form-control" rows = "10" name="general_info" id="general_info" placeholder="General information" /> <?php echo $general_info; ?></textarea>
-        </td>
+      <!-- <tr > -->
+       <!-- <td>General information <?php //echo form_error('general_info') ?></td> -->
+        <!-- <td><textarea class="form-control" rows = "10" name="general_info" id="general_info" placeholder="General information" /> <?php //echo $general_info; ?></textarea>
+        </td> -->
                         
 	    <input type="hidden" name="forecast_id" value="<?php echo $add_id; ?>" />
 

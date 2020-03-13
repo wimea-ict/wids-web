@@ -1,8 +1,13 @@
 <!doctype html>
 <html>
     <head>
-        <title>harviacode.com - codeigniter crud generator</title>
-        <link rel="stylesheet" href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css') ?>"/>
+        <title>Word Doc</title>
+
+        <!---------------------- Amoko ------------------------->
+        <!-- Remove the word Boostrap in the url base -->
+        <link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>"/>
+        <!---------------------- Amoko ------------------------->
+
         <style>
             .word-table {
                 border:1px solid black !important; 
@@ -16,33 +21,33 @@
         </style>
     </head>
     <body>
+        <!---------------------- Amoko ------------------------->
         <h2>Season List</h2>
-        <table class="word-table" style="margin-bottom: 10px">
+        <table class="word-table" style="margin-bottom: 10px;width: 100%">
             <tr>
                 <th>No</th>
-			<th>Advisory</th>
-			<th>Region</th>
-		    <th>Month From</th>
-		    <th>Month To</th>
-		    <th>Issuetime</th>
+			<th>Season</th>
+			<th>Year</th>
+            <th>Overview</th>
+            <th>General Forecast</th>
+            <th>Issue Date</th>
 		
-            </tr><?php
-            foreach ($season_data as $season)
-            {
-			$reg = $this->db->get_where('region',array('id'=>$season->region));
-                ?>
-                <tr>
-		      <td><?php echo ++$start ?></td>
-			<td><?php  foreach ($reg->result() as $p){ echo $p->name ; }?></td>
-                    <td><?php echo $season->subRegion ?></td>
-                    <td><?php echo $season->season ?></td>
-                    <td><?php echo $season->description ?></td>
-                    <td><?php echo $season->impact ?></td>
-			<td><?php echo $season->issuetime ?></td>
+            </tr>
+
+
+            <?php
+            $start = 0;
+            foreach ($season_data as $season){ $start++;?>
+                <tr style="vertical-align: top">
+                    <td><?=$start ?></td>
+                    <td><?=$season['abbreviation'] ?></td>
+                    <td><?=$season['year']?></td>
+                    <td><?=$season['overview'] ?></td>
+                    <td><?=$season['general_forecast'] ?></td>
+                    <td><?=$season['issuetime'] ?></td>
                 </tr>
-                <?php
-            }
-            ?>
+            <?php }?>
         </table>
+        <!---------------------- Amoko ------------------------->
     </body>
 </html>

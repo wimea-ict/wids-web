@@ -2,10 +2,12 @@
         <!-- Main content -->
 
          <section class="content-header">
+<!----------------------------------- Amoko ----------------------------->
                     <h1>
-                        Divisions
+                        Minor Sector
                         <small>Data tables</small>
                     </h1>
+<!----------------------------------- Amoko ----------------------------->
                     <ol class="breadcrumb">
                         <li><a href="<?php echo base_url() ?>index.php/Landing/index"><i class="fa fa-dashboard"></i> Home</a></li>
                         <li><a href="#"><i class="fa fa-dashboard"></i>Sectors</a></li>
@@ -20,12 +22,12 @@
                 <div class='box-header'>
                   <h3 class='box-title'>LIST OF MINOR SECTORS <?php
                    if($_SESSION['usertype'] == "wimea" || $_SESSION['usertype'] == "forecast"){
-				  echo anchor('index.php/season/create/','Create',array('class'=>'btn btn-danger btn-sm'));
-				   }else{
+                  echo anchor('index.php/season/create/','Create',array('class'=>'btn btn-danger btn-sm'));
+                   }else{
 
-				   }?>
-		<?php echo anchor(site_url('index.php/season/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
-		<?php echo anchor(site_url('index.php/season/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
+                   }?>
+        <?php echo anchor(site_url('index.php/minor_sector/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
+        <?php echo anchor(site_url('index.php/minor_sector/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
         <a href="<?php echo site_url('index.php/Minor_sector/displayform'); ?>"class="btn btn-primary btn-sm">Add new</a>
                 </div><!-- /.box-header --> <!--style=" overflow-y: scroll;"-->
                 <div class='box-body'   >
@@ -33,12 +35,12 @@
             <thead>
                 <tr>
                 <th width="80px">No</th>
-		    <th>Minor-Sector Name</th>
+            <th>Minor-Sector Name</th>
             <th>Major Sector</th>
-		    <th>Action</th>
+            <th>Action</th>
            </tr>
             </thead>
-	    <tbody>
+        <tbody>
             <?php
             $start = 0;
             foreach ($minor_sector_data as $d)
@@ -46,20 +48,20 @@
 
             ?>
             <tr>
-		    	<td><?php echo ++$start ?></td>
-				<td><?php echo $d['minor_name']; ?></td>
+                <td><?php echo ++$start ?></td>
+                <td><?php echo $d['minor_name']; ?></td>
                 <td><?php echo $d['sector_name']; ?></td>
 
-		    <td style="text-align:center" width="140px">
-			<?php
-			echo '  ';
+            <td style="text-align:center" width="140px">
+            <?php
+            echo '  ';
            echo anchor(site_url('index.php/Minor_sector/update/'.$d['id']),'<i class="fa fa-pencil-square-o"></i>',array('title'=>'edit','class'=>'btn btn-primary btn-sm'));
-			echo '  ';
-			echo anchor(site_url('index.php/Minor_sector/delete/'.$d['id']),'<i class="fa fa-trash-o"></i>','title="delete" class="btn btn-danger btn-sm" onclick="javascript: return confirm(\'Are You Sure you want to delete this Sector ?\')"');
-		  
-			?>
-		    </td>
-	        </tr>
+            echo '  ';
+            echo anchor(site_url('index.php/Minor_sector/delete/'.$d['id']),'<i class="fa fa-trash-o"></i>','title="delete" class="btn btn-danger btn-sm" onclick="javascript: return confirm(\'Are You Sure you want to delete this Sector ?\')"');
+          
+            ?>
+            </td>
+            </tr>
                 <?php
             }
             ?>

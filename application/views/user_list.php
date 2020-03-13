@@ -26,7 +26,9 @@
 					   
 				   }?>
 		<?php //echo anchor(site_url('index.php/season/excel'), ' <i class="fa fa-file-excel-o"></i> Excel', 'class="btn btn-primary btn-sm"'); ?>
-		<?php //echo anchor(site_url('index.php/season/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
+		<?php
+        $link = "/index.php/Landing/create_user";
+         echo anchor(site_url($link), '<i class="fa fa-user-plus"></i>  Add User', 'class="btn btn-primary btn-sm"'); ?>
 		<?php //echo anchor(site_url('index.php/season/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
                 </div><!-- /.box-header --> <!--style=" overflow-y: scroll;"-->
                 <div class='box-body'   >

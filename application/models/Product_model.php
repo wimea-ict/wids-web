@@ -14,5 +14,11 @@ class Product_model extends CI_Model{
         $query = $this->db->get_where('possible_advisories', array('cat' => $category_id));
         return $query;
     }
+
+    function logfeedback($data=array())
+    {
+    	 
+    	$this->db->insert('user_feedback',$data);  
+    }
      
 }

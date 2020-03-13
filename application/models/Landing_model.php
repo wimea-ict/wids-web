@@ -19,6 +19,11 @@ class Landing_model extends CI_Model {
         $query = $this->db->count_all($table);
         return $query;
     }
+    public function get_count_USSD()
+    {
+        $query = "400";
+        return $query;
+    }
     //count number of ussd on request
     public function ussd($from,$to){
         

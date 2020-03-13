@@ -19,26 +19,26 @@
         <h2>Dekadal_forecast List</h2>
         <table class="word-table" style="margin-bottom: 10px">
             <tr>
-                <th>No</th>
-		<th>Region</th>
-		<th>Advisory</th>
-		<th>Date From</th>
-		<th>Date To</th>
-		<th>Issuetime</th>
+            <th>No</th>
+            <th>Issue Date</th>
+            <th> Date From</th>
+            <th> Date To</th>
+		    <th>General Information</th>
+		    <th>Rainfall Performance</th>
 		
             </tr><?php
-            foreach ($decadal_forecast_data as $decadal_forecast)
+            foreach ($decadal_forecast_data as $d)
             {
-			$reg = $this->db->get_where('region',array('id'=>$decadal_forecast->region));
+	
                 ?>
                 <tr>
-		      <td><?php echo ++$start ?></td>
-			  <td><?php  foreach ($reg->result() as $p){ echo $p->name ; }?></td>
-		      <td><?php echo $decadal_forecast->advisory ?></td>
-		      <td><?php echo $decadal_forecast->date_from ?></td>
-		      <td><?php echo $decadal_forecast->date_to ?></td>
-		      <td><?php echo $decadal_forecast->issuetime ?></td>	
-                </tr>
+                    <td><?php echo ++$start ?></td>
+                    <td><?php echo $d->issue; ?></td>
+                    <td><?php echo $d->date_from; ?></td>
+                    <td><?php echo $d->date_to; ?></td>
+                    <td><?php echo $d->general_info; ?></td>
+                    <td><?php echo $d->general_info; ?></td>              
+              </tr>
                 <?php
             }
             ?>

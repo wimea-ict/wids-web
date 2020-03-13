@@ -3,7 +3,7 @@
 
          <section class="content-header">
                     <h1>
-                        Seasonal Forecast
+                        Major Sector
                         <small>Data tables</small>
                     </h1>
                     <ol class="breadcrumb">
@@ -25,8 +25,13 @@
 					   
 				   }?>
 		<?php //echo anchor(site_url('index.php/season/excel'), ' <i class="fa fa-file-excel-o"></i> Excel', 'class="btn btn-primary btn-sm"'); ?>
-		<?php echo anchor(site_url('index.php/season/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
-		<?php echo anchor(site_url('index.php/season/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
+
+<!---------------------------------- AMoko --------------------->
+<!-- change the url -->
+		<?php echo anchor(site_url('index.php/major_Sector/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
+<!---------------------------------- AMoko --------------------->
+
+		<?php echo anchor(site_url('index.php/major_Sector/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
         <a href="<?php echo site_url('index.php/Major_Sector/displayMajorForm'); ?>" class="btn btn-primary btn-sm">Add New</a>
                 </div><!-- /.box-header --> <!--style=" overflow-y: scroll;"-->
                 <div class='box-body'   >

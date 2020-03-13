@@ -37,6 +37,22 @@ class Sub_region extends CI_Controller
         $this->load->view('sub_region_doc',$data);
     }
 	
+	
+    public function pdf()
+    {
+        $data = array(
+            'sub_region_data' => $this->Sub_region_model->get_all(),
+            'start' => 0
+        );
+        
+        ini_set('memory_limit', '10G');
+        $html = $this->load->view('sub_region_doc', $data, true);
+        $this->load->library('pdf');
+        $pdf = $this->pdf->load();
+        $pdf->WriteHTML($html);
+        $pdf->Output('sub_region.pdf', 'D'); 
+    }
+	
 	//show form for adding the division
 	public function displayform(){
 

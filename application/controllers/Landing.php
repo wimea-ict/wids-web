@@ -10,11 +10,11 @@ class Landing extends CI_Controller {
         $this->config->set_item('theme',$this->config->item('country'));
         $this->load->helper('number');
         $this->load->model('Landing_model');
-		$this->load->model('Season_model');
+        $this->load->model('Season_model');
         $this->load->library('form_validation');
         $this->load->library('email');
         ///$this->load->model('User_model');
-		$this->load->library('session');
+        $this->load->library('session');
         include APPPATH . 'third_party/morris/landing_charts.php';
 
     }
@@ -24,11 +24,13 @@ class Landing extends CI_Controller {
         $this->data['count_users'] = $this->Landing_model->get_count_record('users');
        // $this->data['count_groups'] = $this->Landing_model->get_count_record('groups');
         $this->data['count_categories'] = $this->Landing_model->get_count_record('weather_category');
-        $this->data['count_advisory'] = $this->Landing_model->get_count_record('advisory');
-        $this->data['count_daily_forecast'] = $this->Landing_model->get_count_record('daily_forecast');
+        $this->data['count_division'] = $this->Landing_model->get_count_record('division');
+        $this->data['count_daily_forecast'] = $this->Landing_model->get_count_USSD();
         $this->data['count_decadal'] = $this->Landing_model->get_count_record('decadal_forecast');
         $this->data['count_seasonal_forecast'] = $this->Landing_model->get_count_record('seasonal_forecast');
-        $this->data['count_season'] = $this->Landing_model->get_count_record('season');
+////////////////////////// Amoko////////////////////////////////////////
+        $this->data['count_season'] = $this->Landing_model->get_count_record('users');
+////////////////////////// Amoko////////////////////////////////////////
         $this->data['count_region'] = $this->Landing_model->get_count_record('region');
         $this->data['disk_totalspace'] = $this->Landing_model->disk_totalspace(DIRECTORY_SEPARATOR);
         $this->data['disk_freespace'] = $this->Landing_model->disk_freespace(DIRECTORY_SEPARATOR);
@@ -38,7 +40,8 @@ class Landing extends CI_Controller {
         $this->data['memory_usage'] = $this->Landing_model->memory_usage();
         $this->data['memory_peak_usage'] = $this->Landing_model->memory_peak_usage(TRUE);
         $this->data['memory_usepercent'] = $this->Landing_model->memory_usepercent(TRUE, FALSE);
-		$this->data['seasons'] = $this->Season_model->get_all();
+    $this->data['seasons'] = $this->Season_model->get_all();
+    $this->data['no_data'] = $this->Season_model->no_data();
         //$this->data['ussd_count']= $this->Landing_model->ussd_count();
 
         //chart data
@@ -240,11 +243,11 @@ class Landing extends CI_Controller {
     {
     $this->form_validation->set_rules('first_name','First Name','required');
     $this->form_validation->set_rules('last_name','First Name','required');
-	$this->form_validation->set_rules('username', 'Username', 'required|is_unique[users.username]');
+    $this->form_validation->set_rules('username', 'Username', 'required|is_unique[users.username]');
     $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
     $this->form_validation->set_rules('pass', 'Password', 'required');
     $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[pass]');
-	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
     }
 
     public function ussdcount(){

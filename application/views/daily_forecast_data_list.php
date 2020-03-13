@@ -1,7 +1,7 @@
         <!-- Main content -->
         <section class="content-header">
                     <h1>
-                        Daily Forecast
+                        Daily Forecast Data List
                         <small>Data tables</small>
                     </h1>
                     <ol class="breadcrumb">
@@ -51,8 +51,6 @@
 		    <th>Wind Direction</th>
 		    <th>Wind Strength</th>
             <th>Region</th>
-            <th>Division</th>
-            <th>Weather</th>
             <th>Date</th>
 		    <th>Action</th>
            </tr>
@@ -63,24 +61,22 @@
 			if(isset($daily_forecast_data)){
             foreach ($daily_forecast_data as $p)
             {   ?>
-                <tr>
-		    <td><?php echo ++$start ?></td>
-			<td><?php  if($p->max_temp==0){print('-');}else{echo $p->max_temp;}  ?></td>			
-			<td><?php if($p->min_temp==0){print('-');}else{echo $p->min_temp;}  ?></td>
-			<td><?php echo $p->mea_temp; ?></td>
-			<td><?php echo $p->wind; ?></td>
-			<td><?php echo $p->wind_direction; ?></td>			
-			<td><?php echo $p->wind_strength; ?></td>
-            <td><?php echo $p->region_name; ?></td>
-            <td><?php echo $p->division_name; ?></td>
-            <td><?php echo $p->weather; ?></td>
+            <tr>
+      		  <td><?php echo ++$start ?></td>
+      			<td><?php  if($p->max_temp==0){print('-');}else{echo $p->max_temp;}  ?></td>			
+      			<td><?php if($p->min_temp==0){print('-');}else{echo $p->min_temp;}  ?></td>
+      			<td><?php echo $p->mean_temp; ?></td>
+      			<td><?php echo $p->wind; ?></td>
+      			<td><?php echo $p->wind_direction; ?></td>			
+      			<td><?php echo $p->wind_strength; ?></td>
+             <td><?php echo $p->region_name; ?></td>
             <td><?php echo $p->datetime?></td>
-			<td style="text-align:center" width="140px">
+      			<td style="text-align:center" width="140px">
 			<?php
 										 
-					 echo anchor(site_url('index.php/daily_forecast/areaforecast_list/'.$p->id),'<i class="fa fa-cloud"></i>',array('title'=>'Area forecast','class'=>'btn btn-primary btn-sm')); 
-			        echo '  ';
-			        echo anchor(site_url('index.php/daily_forecast/update/'.$p->id),'<i class="fa fa-pencil-square-o"></i>',array('title'=>'edit','class'=>'btn btn-primary btn-sm'));
+					 // echo anchor(site_url('index.php/daily_forecast/areaforecast_list/'.$p->id),'<i class="fa fa-cloud"></i>',array('title'=>'Area forecast','class'=>'btn btn-primary btn-sm')); 
+			        // echo '  ';
+			        // echo anchor(site_url('index.php/daily_forecast/update/'.$p->id),'<i class="fa fa-pencil-square-o"></i>',array('title'=>'edit','class'=>'btn btn-primary btn-sm'));
 			        echo '  ';
 			        echo anchor(site_url('index.php/daily_forecast/delete/'.$p->id),'<i class="fa fa-trash-o"></i>','title="delete" class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Are You Sure ?\')"');
 			 

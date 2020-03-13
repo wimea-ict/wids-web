@@ -597,6 +597,33 @@ public function create()
       
     //---------------------------------------------------------
 
+    public function dekadal() {
+    
+    $data = array(
+            'change' => 82,
+            'get_all_advisory' => $this->Decadal_forecast_model->get_all_advisory()
+        );
+
+        $this->load->view('template', $data);
+    }
+
+    public function delete_ad($id){
+        $row = $this->Decadal_forecast_model->get_by_id($id);
+        $advisory = $this->Decadal_forecast_model->get_all();
+             $data = array(
+               'change' => 5,
+              'advisory_data' => $advisory
+             );
+        if ($row) {
+            $this->Decadal_forecast_model->delete_ad($id);
+            $this->session->set_flashdata('message', '<font color="green" size="5">Delete Record Success</font>');
+             $this->dekadal();
+        } else {
+            $this->session->set_flashdata('message', '<font color="red" size="5">Record Not Found</font>');
+             $this->dekadal();
+        }
+    }
+    
     public function delete($id) 
     {
         $row = $this->Decadal_forecast_model->get_by_id($id);
@@ -715,7 +742,7 @@ public function create()
         );
         
         ini_set('memory_limit', '10G');
-        $html = $this->load->view('decadal_forecast_pdf', $data, true);
+        $html = $this->load->view('decadal_forecast_doc', $data, true);
         $this->load->library('pdf');
         $pdf = $this->pdf->load();
         $pdf->WriteHTML($html);

@@ -9,6 +9,7 @@ class Region_model extends CI_Model
     public $table = 'region';
     public $id = 'id';
     public $order = 'DESC';
+     public $order_asc = 'ASC';
 	public $region_name = 'region_name';
 
     function __construct()
@@ -19,7 +20,7 @@ class Region_model extends CI_Model
     // get all
     function get_all()
     {
-        $this->db->order_by($this->region_name, $this->order);
+        $this->db->order_by($this->id, $this->order_asc);
 		//echo $this->db->get($this->table)->result(); exit();
         return $this->db->get($this->table)->result();
     }

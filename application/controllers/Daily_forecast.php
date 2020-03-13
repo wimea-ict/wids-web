@@ -43,6 +43,9 @@ class Daily_forecast extends CI_Controller
         $data['daily_forecast_data']= $this->Daily_forecast_model->get_all_replaced();
 		$data['division_data']= $this->Division_model->get_all();//season_data season_data
 		$data['season_names']= $this->Season_names_model->get_all();
+        //-----added new queries here
+       $data['forecast_time_data'] = $this->Daily_forecast_model->get_forecast_time();
+       $data['available_language_data'] = $this->Daily_forecast_model->get_available_language();
 		$country = $this->config->item('country');
 		$data['division_type']= $this->Division_model->getdivisionname($country);
 		$data['region'] = $this->Region_model->get_all();  
@@ -99,6 +102,26 @@ class Daily_forecast extends CI_Controller
 
         $this->load->view('time_doc',$data);
     }
+	
+	
+	public function timepdf()
+    {
+        
+
+        $data = array(
+            'time_data' => $this->Daily_forecast_time_model->get_all(),
+            'start' => 0
+        );
+        
+        ini_set('memory_limit', '10G');
+        $html = $this->load->view('time_doc', $data, true);
+        $this->load->library('pdf');
+        $pdf = $this->pdf->load();
+        $pdf->WriteHTML($html);
+        $pdf->Output('time_doc.pdf', 'D'); 
+    }
+
+	
 
     public function create_advisory_form()
     {
@@ -125,10 +148,12 @@ class Daily_forecast extends CI_Controller
     public function create_advisory()
     {
         
-                // Loop to store and display values of individual checked checkbox.
-                foreach ($_POST['advisory'] as $selected) {
+            $all = "";
+        if(isset($_POST['advisory'])){
+            foreach ($_POST['advisory'] as $selected) {
                     $all .= $selected."<br>";
                 }
+        }
             $datatoinsert = array(
              'forecast_id' => $this->input->post('forecast_id',TRUE),
              'advice' => $all,
@@ -136,13 +161,23 @@ class Daily_forecast extends CI_Controller
              'message_summary' => $this->input->post('summary',TRUE)
         );
         $this->Daily_forecast_model->insert_advisory($datatoinsert);
+        $id = $this->uri->segment(3);
         $data = array(
             'change' => 84,
-            'get_all_advisory' => $this->Daily_forecast_model->get_all_advisory()
+            'get_all_advisory' => $this->Daily_forecast_model->get_all_advisory($id)
         );          
           
         $this->load->view('template', $data);
         
+    }
+    public function daily()
+    {
+    $data = array(
+            'change' => 84,
+            'get_all_advisory' => $this->Daily_forecast_model->get_all_advisories()
+        );
+
+        $this->load->view('template', $data);
     }
 
     public function read()
@@ -321,32 +356,39 @@ function saveforecastimpactdata(){
              $data['change'] = 80; 
              $this->load->view('template', $data);   
 	
-}
-function saveforecastdata(){
-	$id = $this->input->post('forecast_id',TRUE);
-	$data = array(
-				'mean_temp' => $this->input->post('mean_temp',TRUE),
-				'max_temp' => $this->input->post('max_temp',TRUE),
-				'min_temp' => $this->input->post('min_temp',TRUE),
-				'wind' => $this->input->post('wind',TRUE),				
-				'wind_direction' => $this->input->post('wind_direction',TRUE),
-				'wind_strength' => $this->input->post('wind_strength',TRUE),
-				'region_id' => $this->input->post('region',TRUE),
-				'division_id' => $this->input->post('division',TRUE),
-				'forecast_id' => $this->input->post('forecast_id'),
-				'weather_cat_id' => $this->input->post('cat_id',TRUE)
-				);	
-		    $this->Daily_forecast_model->insertforecastdata($data);
-		     $data['daily_forecast_data'] = $this->Daily_forecast_model->get_daily_forecast_data($id);
-			$data['change'] = 78;
-           	$country = $this->config->item('country');
-		    $data['division_type']= $this->Division_model->getdivisionname($country);  
+}function saveforecastdata(){
+    $id = $this->input->post('forecast_id',TRUE);
+    $data = array(
+                'mean_temp' => $this->input->post('mean_temp',TRUE),
+                'max_temp' => $this->input->post('max_temp',TRUE),
+                'min_temp' => $this->input->post('min_temp',TRUE),
+                'wind' => $this->input->post('wind',TRUE),              
+                'wind_direction' => $this->input->post('wind_direction',TRUE),
+                'wind_strength' => $this->input->post('wind_strength',TRUE),
+                'region_id' => $this->input->post('region',TRUE),
+                //'division_id' => $this->input->post('division',TRUE),
+                'forecast_id' => $this->input->post('forecast_id'),
+                'weather_cat_id' => $this->input->post('cat_id',TRUE)
+                );  
+
+    $recs = $this->Daily_forecast_model->forecast_data_checker($this->input->post('region',TRUE), $this->input->post('forecast_id'));
+    $exists = FALSE;
+    foreach ($recs as $k) {
+        $exists  = TRUE;
+    }
+    if($exists == TRUE){
+        $this->session->set_flashdata('message', '<font color="red" size="5">The region data already exists</font>');
+    }else{
+        $this->Daily_forecast_model->insertforecastdata($data);
+    }
+            
+             $data['daily_forecast_data'] = $this->Daily_forecast_model->get_daily_forecast_data($id);
+            $data['change'] = 78;
+            $country = $this->config->item('country');
+            $data['division_type']= $this->Division_model->getdivisionname($country);  
             $this->load->view('template',$data);     
-	
+    
 }
-
-
-//save daily 
   public function save(){
       //--------date-----------------------------------
       $date = strtotime($this->input->post('date_forecasted',TRUE));
@@ -355,24 +397,36 @@ function saveforecastdata(){
     $date_issue = date('Y',$issuedate).'-'.date('m',$issuedate).'-'.date('d',$issuedate);
       //-------end of date format----------------
          $data = array(
-				'weather' => $this->input->post('weather',TRUE),
-				'date' => $date_time,
-				'time' => $this->input->post('time',TRUE),
-				'dutyforecaster' => $this->input->post('dutyforecaster',TRUE),
-				'validitytime' => $this->input->post('validitytime',TRUE),
-				'issuedate' => $date_issue				
-				);
-		
-            $this->Daily_forecast_model->insert($data);
-		
-			$data['change'] = 3;
-            $data['daily_forecast_data'] = $this->Daily_forecast_model->get_all();
-			//$country = $this->config->item('country');
-		  //  $data['division_type']= $this->Division_model->getdivisionname($country);  
-            $this->load->view('template',$data);
+                'weather' => $this->input->post('weather',TRUE),
+                'date' => $date_time,
+                'time' => $this->input->post('time',TRUE),
+                'language_id' => $this->input->post('language',TRUE),
+                'dutyforecaster' => $this->input->post('dutyforecaster',TRUE),
+                'validitytime' => $this->input->post('validitytime',TRUE),
+                'issuedate' => $date_issue              
+                );
+        
+        
+         $recs = $this->Daily_forecast_model->forecast_checker($date_time, $this->input->post('time',TRUE));
+         $exists = FALSE;
+         foreach ($recs as $key) {
+             $exists = TRUE;
+         }
+
+
+
+         if($exists == TRUE){
+            $this->session->set_flashdata('message', '<font color="red" size="5">Forecast already exists</font>');
+        }else{
+            $this->Daily_forecast_model->insert($data);  
+        }
+        $data['change'] = 3;  
+        $data['daily_forecast_data'] = $this->Daily_forecast_model->get_all();
+        //$country = $this->config->item('country');
+      //  $data['division_type']= $this->Division_model->getdivisionname($country);  
+        $this->load->view('template',$data);
        
     }
-	
 	
 //single form create action
     public function save_multiple(){
@@ -469,13 +523,28 @@ function saveforecastdata(){
             $this->load->view('template', $data);
         }
     }
-
+    public function delete_ad($id){
+        $row = $this->Daily_forecast_model->get_by_id($id);
+        $advisory = $this->Daily_forecast_model->get_all();
+             $data = array(
+               'change' => 5,
+              'advisory_data' => $advisory
+             );
+        if ($row) {
+            $this->Daily_forecast_model->delete_ad($id);
+            $this->session->set_flashdata('message', '<font color="green" size="5">Delete Record Success</font>');
+             $this->daily();
+        } else {
+            $this->session->set_flashdata('message', '<font color="red" size="5">Record Not Found</font>');
+             $this->daily();
+        }
+    }
     public function delete()
     {   $id = $this->uri->segment(3);
         $data['change'] =3;
             $this->Daily_forecast_model->delete($id);
             $this->session->set_flashdata('message', '<font color="green" size="5">Deleted Record Success</font>');
-            $this->load->view('template', $data);
+            $this->index();
 
     }
 
@@ -622,7 +691,7 @@ function saveforecastdata(){
     public function pdf_download($data){
         
         ini_set('memory_limit', '10G');
-        $html = $this->load->view('daily_forecast_pdf', $data, true);
+        $html = $this->load->view('daily_forecast_doc', $data, true);
         $this->load->library('pdf');
         $pdf = $this->pdf->load();
         $pdf->WriteHTML($html);

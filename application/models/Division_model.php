@@ -9,6 +9,7 @@ class Division_model extends CI_Model
     public $table = 'division';
     public $id = 'id';
     public $order = 'DESC';
+    public $order_asc = 'ASC';
 
     function __construct()
     {
@@ -21,6 +22,7 @@ class Division_model extends CI_Model
        $this->db->select('division.division_name, division.division_type, division.id,region.region_name');
 	   $this->db->from('division');
        $this->db->join('region','region.id=division.region_id');
+       $this->db->order_by('division.division_name', $this->order_asc);
 	   $query=$this->db->get();
    
        return $query->result_array();

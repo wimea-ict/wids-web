@@ -33,7 +33,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 ?>
             <div class="login-logo">
-                <a href="#"><b>Dissemination System</b> </a>
+                <a href="#"><b>Weather Information Dissemination System</b> </a>
             </div>
 
             <div class="login-box-body">

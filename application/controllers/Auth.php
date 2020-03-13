@@ -199,20 +199,24 @@ class Auth extends CI_Controller {
          $data['country_name'] = $country;
          $division_text = $this->Division_model->get_divisionName_data($id);
          $data['division_text']= $division_text;
-        
+         $random = rand(1, 8);
          //-----------------SEASONAL DATA--------------------
          //advice query
-	     $data['seasonal_advice_home'] = $this->Season_model->get_advice(1);
+	     $data['seasonal_advice_home'] = $this->Season_model->get_advice($random);
          $season_home = $this->Season_model->get_current_season(); 
          $data['divide'] = $season_home;
 
-          $data['seasonal_data_home'] = $this->Season_model->get_season_data($season_home, 1);
-          $data['divisio_name'] = $this->Season_model->get_current_division(1); 
+          $data['seasonal_data_home'] = $this->Season_model->get_season_data($season_home, $random);
+          $data['dekadal_forecast_data']= $this->Decadal_forecast_model->get_dekadal_forecast_area($random);
+          $data['divisio_name'] = $this->Season_model->get_current_division($random); 
+
+
          //---------------------------------------------------
        //-=------------------HOME PAGE DAILY FORECASTS-------------------
+		$data['daily_advice_home'] = $this->Daily_forecast_model->get_advice($random);
                  $daily_forecast_data_home = $this->Daily_forecast_model->get_recent_forecast();
 			 	// retrieves forecast for the next day
-			 	$next_day_forecast_data_home = $this->Daily_forecast_model->get_next_day_forecast();
+			 	$next_day_forecast_data_home = $this->Daily_forecast_model->get_next_day_forecast($random);
 			 	$data['next_day_forecast_data_home']=$next_day_forecast_data_home;
 			 	if(isset($next_day_forecast_data_home)){ 
 					foreach($next_day_forecast_data_home as $d){	
@@ -240,7 +244,9 @@ class Auth extends CI_Controller {
                 $data['weather_desc'] =  $weather_desc;
                 $data['valid'] = $valid;
                 $data['issuedat'] = $issuedat;
-                $get_next_day_forecast_data_for_region_home= $this->Daily_forecast_model->get_next_day_forecast_data_for_region($tmr_forecast,1);
+
+
+                $get_next_day_forecast_data_for_region_home= $this->Daily_forecast_model->get_next_day_forecast_data_for_region($tmr_forecast,$random);
                 $data['get_next_day_forecast_data_for_region_home'] =$get_next_day_forecast_data_for_region_home;		
                 // passing data to the view
 				$data['daily_forecast_data_home']= $daily_forecast_data_home;
@@ -251,11 +257,14 @@ class Auth extends CI_Controller {
 					}
                 }
 
-                $daily_forecast_region_data_home= $this->Daily_forecast_model->get_daily_forecast_data_for_region($forecast_id,1);
-                $data['daily_forecast_region_data_home'] =$daily_forecast_region_data_home;
+                // $data['daily_forecast_region_data_home'] = $this->Daily_forecast_model->get_daily_forecast_data_for_region($forecast_id,12);
+                
+                $data['daily_forecast_region_data'] =$this->Daily_forecast_model->get_daily_forecast_data_for_region($forecast_id,$random);
+                $data['daily_forcast_division'] =$this->Daily_forecast_model->get_daily_forecast_data_for_region_division($random);
                //division name for currently accessed daily forecast
                $division_name = $this->Division_model->get_divisionNameByID(1);
                $data['division_name'] =$division_name;
+               $data['div_id']= $random;
        //==================end============================================
 		        $area1 = $this->Season_model->get_all_forecast_area();
 		        $data['area']= $area1;
@@ -268,11 +277,12 @@ class Auth extends CI_Controller {
 		    //-------check for requested category---------------
 		   if(isset($ve)){
              //===============DAILY REQUEST DATA=================================================
-			   if($ve=="Daily Forecast"){
-  					$data['seasonal_advice'] = $this->Daily_forecast_model->get_advice($division_id);
-                 $daily_forecast_data = $this->Daily_forecast_model->get_recent_forecast();
+			  if($ve=="Daily Forecast"){
+ 			$data['daily_advice'] = $this->Daily_forecast_model->get_advice($division_id);
+  			$data['seasonal_advice'] = $this->Daily_forecast_model->get_advice($division_id);
+                                                            $daily_forecast_data = $this->Daily_forecast_model->get_recent_forecast();
 			 	// retrieves forecast for the next day
-			 	$next_day_forecast_data = $this->Daily_forecast_model->get_next_day_forecast();
+			 	$next_day_forecast_data = $this->Daily_forecast_model->get_next_day_forecast($division_id);
 			 	$data['next_day_forecast_data']=$next_day_forecast_data;
 			 	if(isset($next_day_forecast_data)){ 
 					foreach($next_day_forecast_data as $d){	
@@ -315,8 +325,9 @@ class Auth extends CI_Controller {
                //division name for currently accessed daily forecast
                $division_name = $this->Division_model->get_divisionNameByID($division_id);
                $data['division_name'] =$division_name;
+               $data['div_id']= $division_id;
                //Retrieve daily forecast for specific/ random region
-               $daily_forecast_region_data_dynamic = $this->Daily_forecast_model->get_daily_forecast_data_for_region($forecast_id,2);
+               $daily_forecast_region_data_dynamic = $this->Daily_forecast_model->get_daily_forecast_data_for_region($forecast_id,$random);
                $data['daily_forecast_region_data_dynamic'] = $daily_forecast_region_data_dynamic;
               
              }
@@ -326,6 +337,7 @@ class Auth extends CI_Controller {
              
 			 $dekadal_forecast_data =  $this->Decadal_forecast_model->get_dekadal_forecast_division($division_id);
              $data['dekadal_forecast_data'] = $dekadal_forecast_data;
+             $data['div_id']= $division_id;
             }
 			 //===================SEASONAL DATA================================================
 			 if($ve=="Seasonal Forecast"){
@@ -334,7 +346,10 @@ class Auth extends CI_Controller {
                 $season = $this->Season_model->get_current_season(); 
                 $data['divide'] = $season;
                  $data['seasonal_data'] = $this->Season_model->get_season_data($season, $division_id);
+
+
                 $data['divisio_name'] = $this->Season_model->get_current_division($division_id);
+                $data['div_id']= $division_id;
                 }
          }	 
     //---------------------------------ADVISORY REQUEST DATA------------------------------------

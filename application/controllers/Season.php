@@ -15,7 +15,8 @@ class Season extends CI_Controller
         $this->load->library('form_validation');
 		$this->load->library('session');
 		 $this->load->model('Region_model');  
-		 $this->load->model('Season_names_model');  
+		 $this->load->model('Season_names_model');
+         $this->load->model('Daily_forecast_model');  
 		  $this->load->model('Sub_region_model');
     }
 
@@ -30,6 +31,19 @@ class Season extends CI_Controller
 
         $this->load->view('template', $data);
     }
+	public function wording()
+    {
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment;Filename=season's data.doc");
+        $id = $this->uri->segment(3);
+        $data = array(
+            'forecast_area_data2'=> $this->Season_model->get_forecast_area($id),
+            'start' => 0
+        );
+        
+        $this->load->view('season_doc2',$data);
+    }
+
 
  
   public function read($id=NULL) 
@@ -47,6 +61,8 @@ class Season extends CI_Controller
     {
 	    $data['change'] = 14;	
 	  //  $data['region_data'] = $this->Season_model->get_all();
+
+       $data['available_language_data'] = $this->Daily_forecast_model->get_available_language();
 		$data['season_data'] = $this->Season_names_model->get_all();
 		 
         $this->load->view('template', $data);
@@ -513,11 +529,13 @@ class Season extends CI_Controller
 	function createregionforecast(){
        $forecastid= $this->uri->segment(3);
        $region = $this->Region_model->get_all();
+       $available_language_data = $this->Season_model->get_available_language();
        $season = $this->Season_model->get_all();
 	   $subregion = $this->Sub_region_model->get_all();
         $data = array(
                 'region_data'=>$region,
                 'season_data' => $season,
+                'available_language_data' => $available_language_data,
                 'change' => 72,
 				'subregion'=>$subregion,
                 'add_id'=>$forecastid
@@ -528,6 +546,7 @@ class Season extends CI_Controller
     //-------------------------adding data to the database------------------------------
     public function  SaveForecastArea(){
          $datatoinsert = array(
+            'language_id' => $this->input->post('language',TRUE),
              'region_id' => $this->input->post('region_id',TRUE),
 			 'subregion_id'=>$this->input->post('subregion_id',TRUE),			
              'expected_peak' => $this->input->post('expected_peak',TRUE),
@@ -537,10 +556,23 @@ class Season extends CI_Controller
 			 'enddesc' => $this->input->post('enddesc',TRUE),
 			 'end_period' => $this->input->post('end_period',TRUE),
              'overall_comment' => $this->input->post('overall_comment',TRUE),
-			 'forecast_id' => $this->input->post('forecast_id',TRUE),
-             'general_info' => $this->input->post('general_info',TRUE)
+			 'forecast_id' => $this->input->post('forecast_id',TRUE)
              );
-         $this->Season_model->insertForecastArea($datatoinsert);
+
+         //-------------2020 changes--------------------------------------------------------------------
+          $recs = $this->Season_model->forecast_checker($this->input->post('region_id',TRUE), $this->input->post('subregion_id',TRUE),$this->input->post('language',TRUE));
+         $exists = FALSE;
+         foreach ($recs as $key) {
+             $exists = TRUE;
+         }
+
+         if($exists == TRUE){
+            $this->session->set_flashdata('message', '<font color="red" size="5">Forecast already exists</font>');
+        }else{
+            $this->Season_model->insertForecastArea($datatoinsert); 
+        }
+        //--------------------------------------------------------------------------------------------------------
+         
     $data = array(
            'forecast_area_data'=> $this->Season_model->get_forecast_area(),
            'change' => 73
@@ -594,36 +626,17 @@ class Season extends CI_Controller
     {
         $row = $this->Season_model->get_by_id($id);
 
-        if ($row) {
-
-            if(!(strpos($row->graph,'no image'))) {
-                $path1 = $_SERVER['DOCUMENT_ROOT'].'Dissemination/'.$row->graph;
-                $this->remove_file($path1);
-            }
-
-            if(!(strpos($row->audio,'no audio'))) {
-                $path = $_SERVER['DOCUMENT_ROOT'].'Dissemination/'.$row->audio;
-                $this->remove_file($path);
-            }
-
-
-            $this->Season_model->delete($id);
+            //-------2020 changes------------------//
+            $this->Season_model->delete1($id);
 			$season = $this->Season_model->get_all();
 			$data = array(
 			'season_data' => $season,
-		   'change'   => 15,
+            'forecast_area_data'=> $this->Season_model->get_forecast_area(),
+		   'change'   => 73,
 	    );
             $this->session->set_flashdata('message', '<font color="green" size="5">Delete Record Success</font>');
              $this->load->view('template', $data);
-        } else {
-		$season = $this->Season_model->get_all();
-			$data = array(
-			'season_data' => $season,
-		   'change'   => 15,
-	    );
-            $this->session->set_flashdata('message', '<font color="red" size="5">Record Not Found</font>');
-             $this->load->view('template', $data);
-        }
+        
     }
     public function remove_file($pp)
     {
@@ -711,13 +724,15 @@ class Season extends CI_Controller
 
     public function pdf()
     {
+        $seasons = $this->Season_model->get_all();
+
         $data = array(
-            'season_data' => $this->Season_model->get_all(),
+            'season_data' => $seasons,
             'start' => 0
         );
         
         ini_set('memory_limit', '10G');
-        $html = $this->load->view('season_pdf', $data, true);
+        $html = $this->load->view('season_doc', $data, true);
         $this->load->library('pdf');
         $pdf = $this->pdf->load();
         $pdf->WriteHTML($html);

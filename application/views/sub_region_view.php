@@ -29,7 +29,7 @@
 		<?php echo anchor(site_url('index.php/sub_region/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
  <!---------------------------- Amoko ---------------------->
 
-		<?php echo anchor(site_url('index.php/Season/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
+		<?php echo anchor(site_url('index.php/sub_region/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?></h3>
         <a class="btn btn-primary btn-sm" href="<?php echo site_url('index.php/Sub_region/displayform'); 'class="btn btn-primary btn-sm"'?>" >Add New</a>
                 </div><!-- /.box-header --> <!--style=" overflow-y: scroll;"-->
                 <div class='box-body'   >

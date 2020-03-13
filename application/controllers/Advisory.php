@@ -25,10 +25,11 @@ class Advisory extends CI_Controller
     
     public function index()
     {
-    $advisory = $this->Advisory_model->get_all();
-	$id= $this->uri->segment(3);
-	//print_r($advisory); exit();
-	$data = array(
+        $id= $this->uri->segment(3);
+    $advisory = $this->Advisory_model->get_all($id);
+    
+    //print_r($advisory); exit();
+    $data = array(
             'change' => 5,
             'forecast_id' => $id,
             'advisory_data' => $advisory
@@ -52,11 +53,21 @@ class Advisory extends CI_Controller
         $this->load->view('template', $data);
     }
 
-     public function daily()
+    public function daily()
     {
     $data = array(
             'change' => 84,
             'get_all_advisory' => $this->Daily_forecast_model->get_all_advisory()
+        );
+
+        $this->load->view('template', $data);
+    }
+
+    public function daily1()
+    {
+    $data = array(
+            'change' => 84,
+            'get_all_advisory' => $this->Daily_forecast_model->get_all_advisory($this->uri->segment(3))
         );
 
         $this->load->view('template', $data);
@@ -77,7 +88,7 @@ class Advisory extends CI_Controller
     );
     $data['category'] = $this->Product_model->get_category()->result();
 	$data['region_data']= $this->Region_model->get_all();
-	$data['sector_data']= $this->Minor_model->get_category()->result();
+	$data['sector_data']= $this->Minor_model->get_categories()->result();
     $data['forecast_id']= $this->uri->segment(3);
     //print_r($data);exit();
     $this->load->view('template', $data);
@@ -93,6 +104,38 @@ class Advisory extends CI_Controller
 
         $this->load->view('template', $data);
     }
+	
+	 // DEKADAL WORD 
+    public function dekadal_advisory_word()
+    {
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment;Filename=ward.doc");
+
+        $data = array(
+            
+            'get_all_advisory' => $this->Decadal_forecast_model->get_all_advisory(),
+            'start' => 0
+        );
+
+        $this->load->view('advisory_dekadal_doc',$data);
+    }
+
+    public function dekadaladvisory_pdf()
+    {
+        $data = array(
+            'get_all_advisory' => $this->Decadal_forecast_model->get_all_advisory(),
+            'start' => 0
+        );
+
+        ini_set('memory_limit', '10G');
+        $html = $this->load->view('advisory_dekadal_doc', $data, true);
+        $this->load->library('pdf');
+        $pdf = $this->pdf->load();
+        $pdf->WriteHTML($html);
+        $pdf->Output('advisory.pdf', 'D');
+    }
+
+	
 
 
 
@@ -115,20 +158,18 @@ class Advisory extends CI_Controller
     {
         
                 // Loop to store and display values of individual checked checkbox.
-                foreach ($_POST['advisory'] as $selected) {
-                    $all .= $selected."<br>";
-                }
+   
            
             $datatoinsert = array(
-       		 'forecast_id' => $this->input->post('forecast_id',TRUE),
-			 'advice' => $all,
-			 'sector' => $this->input->post('category',TRUE),
-			 'message_summary' => $this->input->post('summary',TRUE)
-	    );
-		$this->Advisory_model->insert($datatoinsert);
-		$advisory = $this->Advisory_model->get_all();
-		$data = array(
-			'change' => 5,
+             'forecast_id' => $this->input->post('forecast_id',TRUE),
+             'advice' => "Seasonal",
+             'sector' => $this->input->post('category',TRUE),
+             'message_summary' => $this->input->post('summary',TRUE)
+        );
+        $this->Advisory_model->insert($datatoinsert);
+        $advisory = $this->Advisory_model->get_all();
+        $data = array(
+            'change' => 5,
             'advisory_data' => $advisory
         );          
           
@@ -351,13 +392,12 @@ class Advisory extends CI_Controller
         header("Content-Disposition: attachment;Filename=ward.doc");
 
         $data = array(
-            'Advisory_data' => $this->Advisory_model->get_all(),
+            'advisory_data' => $this->Advisory_model->get_all(),
             'start' => 0
         );
 
         $this->load->view('Advisory_doc',$data);
     }
-
     public function pdf()
     {
         $data = array(
@@ -372,6 +412,43 @@ class Advisory extends CI_Controller
         $pdf->WriteHTML($html);
         $pdf->Output('advisory.pdf', 'D');
     }
+	
+	
+	 public function dailyadvisory_word()
+    {
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment;Filename=dailyadvisory.doc");
+
+        $data = array(
+            
+            'get_all_advisory' => $this->Daily_forecast_model->get_all_advisory(),
+            'start' => 0
+        );
+
+        $this->load->view('daily_advisory',$data);
+    }
+
+    public function dailyadvisory_pdf()
+    {
+        $data = array(
+            'get_all_advisory' => $this->Daily_forecast_model->get_all_advisory(),
+            'start' => 0
+        );
+
+        ini_set('memory_limit', '10G');
+        $html = $this->load->view('daily_advisory', $data, true);
+        $this->load->library('pdf');
+        $pdf = $this->pdf->load();
+        $pdf->WriteHTML($html);
+        $pdf->Output('dailyadvisory.pdf', 'D');
+    }
+
+	
+	
+	
+	
+	
+	
     public function do_upload()
     {
         $config['upload_path'] = './uploads/food_agric/';

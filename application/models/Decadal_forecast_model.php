@@ -7,9 +7,10 @@ class Decadal_forecast_model extends CI_Model
 {
 
     public $table = 'decadal_forecast';
+    public $table1 = 'dekadal_advisory';
     public $id = 'id';
     public $order = 'DESC';
-	public $issuetime = 'issuedate';
+  public $issuetime = 'issuedate';
 
     function __construct()
     {
@@ -53,24 +54,24 @@ class Decadal_forecast_model extends CI_Model
   // get total rows
     function total_rows($q = NULL) {
         $this->db->like('id', $q);
-	$this->db->or_like('advisory', $q);
-	$this->db->or_like('date_from', $q);
-	$this->db->or_like('date_to', $q);
-	$this->db->or_like('issuetime', $q);
-	$this->db->from($this->table);
+  $this->db->or_like('advisory', $q);
+  $this->db->or_like('date_from', $q);
+  $this->db->or_like('date_to', $q);
+  $this->db->or_like('issuetime', $q);
+  $this->db->from($this->table);
         return $this->db->count_all_results();
     }
-	
-	
-	function get_recent_forecast($region_id){
-		 $this->db->select('decadal_forecast.date_from,decadal_forecast.date_to, decadal_forecast.issuetime,region.region_name');
-		$this->db->from('decadal_forecast');
-		$this->db->join('region','decadal_forecast.regionid = region.id');
-		$this->db->order_by($this->id, $this->order);
-		$this->db->limit("1");	
-	return $this->db->get()->result(); 	
-		
-	}
+  
+  
+  function get_recent_forecast($region_id){
+     $this->db->select('decadal_forecast.date_from,decadal_forecast.date_to, decadal_forecast.issuetime,region.region_name');
+    $this->db->from('decadal_forecast');
+    $this->db->join('region','decadal_forecast.regionid = region.id');
+    $this->db->order_by($this->id, $this->order);
+    $this->db->limit("1");  
+  return $this->db->get()->result();  
+    
+  }
        public  function get_all_advisory()
     { 
         $this->db->select('minor_sector.minor_name, dekadal_advisory.id,dekadal_advisory.sector,dekadal_advisory.forecast_id,dekadal_advisory.advice,dekadal_advisory.message_summary,');
@@ -82,6 +83,13 @@ class Decadal_forecast_model extends CI_Model
        return $query->result_array();
       
     }
+///////////////////////////////////////////////////////
+     function logfeedback($data=array())
+    {
+        $this->db->insert('user_feedback',$data);
+        return 1;
+    }
+    ///////////////////////////////////////////////////////
 
     function insert_advisory($data=array())
     {
@@ -91,38 +99,38 @@ class Decadal_forecast_model extends CI_Model
     function get_limit_data($limit, $start = 0, $q = NULL) {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id', $q);
-	$this->db->or_like('advisory', $q);
-	$this->db->or_like('date_from', $q);
-	$this->db->or_like('date_to', $q);
-	$this->db->or_like('issuetime', $q);
-	$this->db->limit($limit, $start);
+  $this->db->or_like('advisory', $q);
+  $this->db->or_like('date_from', $q);
+  $this->db->or_like('date_to', $q);
+  $this->db->or_like('issuetime', $q);
+  $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result(); 
     }
 
     // insert data
     function insert($data=array())
     {            
-     	 $this->db->insert('decadal_forecast',$data);  
+       $this->db->insert('decadal_forecast',$data);  
     } 
-	
-	  function insertDekadalForecastArea($data=array())
+  
+    function insertDekadalForecastArea($data=array())
     {  
         $this->db->insert('area_decadal_forecast',$data);
     }
     //SELECT area_decadal_forecast.mapurl,area_decadal_forecast.general_info,region.region_name, sub_region.sub_region_name,decadal_forecast.date_from,decadal_forecast.date_to,decadal_forecast.issuedate,decadal_forecast.volume,decadal_forecast.general_info,decadal_forecast.max_temp, decadal_forecast.min_temp, decadal_forecast.mean_temp,decadal_forecast.issue,decadal_forecast.rainfall FROM area_decadal_forecast INNER JOIN region ON area_decadal_forecast.region_id = region.id INNER JOIN sub_region ON area_decadal_forecast.subregion_id = sub_region.id 
     //INNER JOIN decadal_forecast ON area_decadal_forecast.dekadal_id = decadal_forecast.id
-	//get the details if teh dekadal area forecast 
-	function get_dekadal_forecast_area($id=NULL){
-	  $this->db->select('area_decadal_forecast.id, area_decadal_forecast.region_id, area_decadal_forecast.subregion_id, area_decadal_forecast.dekadal_id, area_decadal_forecast.mapurl,area_decadal_forecast.general_info,decadal_forecast.id, decadal_forecast.date_from, decadal_forecast.date_to, decadal_forecast.issuedate, decadal_forecast.volume, decadal_forecast.issue,decadal_forecast.general_info,decadal_forecast.max_temp,decadal_forecast.min_temp,decadal_forecast.mean_temp, decadal_forecast.rainfall,sub_region.sub_region_name,region.region_name');
+  //get the details if teh dekadal area forecast 
+  function get_dekadal_forecast_area($id=NULL){
+    $this->db->select('area_decadal_forecast.id, area_decadal_forecast.region_id, area_decadal_forecast.subregion_id, area_decadal_forecast.dekadal_id, area_decadal_forecast.mapurl,area_decadal_forecast.general_info,decadal_forecast.id, decadal_forecast.date_from, decadal_forecast.date_to, decadal_forecast.issuedate, decadal_forecast.volume, decadal_forecast.issue,decadal_forecast.general_info,decadal_forecast.max_temp,decadal_forecast.min_temp,decadal_forecast.mean_temp, decadal_forecast.rainfall,sub_region.sub_region_name,region.region_name');
       $this->db->from('area_decadal_forecast');
-	  $this->db->join('decadal_forecast','decadal_forecast.id=area_decadal_forecast.dekadal_id','inner'); 
+    $this->db->join('decadal_forecast','decadal_forecast.id=area_decadal_forecast.dekadal_id','inner'); 
       $this->db->join('region','region.id=area_decadal_forecast.region_id','inner'); 
-	  $this->db->join('sub_region','sub_region.id=area_decadal_forecast.subregion_id','inner'); 
+    $this->db->join('sub_region','sub_region.id=area_decadal_forecast.subregion_id','inner'); 
      if(isset($id)){
-	   $this->db->where('area_decadal_forecast.region_id',$id);	 
-	}
+     $this->db->where('area_decadal_forecast.region_id',$id);  
+  }
      $query=$this->db->get();   
-     return $query->result_array();	
+     return $query->result_array(); 
     }
     
     function get_dekadal_forecast_division($id=NULL){
@@ -134,7 +142,7 @@ class Decadal_forecast_model extends CI_Model
         $this->db->join('decadal_forecast','area_decadal_forecast.dekadal_id = decadal_forecast.id');
          $this->db->where('division.id',$id);
        $query=$this->db->get();   
-       return $query->result_array();	
+       return $query->result_array(); 
       }
      
       function update_by_id($id, $data =array())
@@ -169,6 +177,11 @@ class Decadal_forecast_model extends CI_Model
     {
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
+    }
+    function delete_ad($id)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->delete($this->table1);
     }
 
     //get farmers to send message
@@ -237,28 +250,28 @@ class Decadal_forecast_model extends CI_Model
         $messg=str_replace("?","\'",$msg);
         
 
-		$resp = "";
-		try{
+    $resp = "";
+    try{
                 
         
-        $textmessage = urlencode($messg);	
+        $textmessage = urlencode($messg); 
         
-		$url = 'http://simplysms.com/getapi.php';
+    $url = 'http://simplysms.com/getapi.php';
         $urlfinal = $url.'?'.'email'.'='.'rc4wids@yahoo.com'.'&'.'password'.'='.'VBsd9A2'.'&'.'sender'.'='.'8777'.'&'.'message'.'='.$textmessage.'&'.'recipients'.'='.$phoneNumber;
         //var_dump($urlfinal);
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $urlfinal);
-		curl_setopt_array($ch,array(
-		CURLOPT_RETURNTRANSFER =>1,   
-		//CURLOPT_URL =>$urlfinal,
-		CURLOPT_USERAGENT =>'Codular Sample cURL Request'));
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $urlfinal);
+    curl_setopt_array($ch,array(
+    CURLOPT_RETURNTRANSFER =>1,   
+    //CURLOPT_URL =>$urlfinal,
+    CURLOPT_USERAGENT =>'Codular Sample cURL Request'));
 
-		$resp = curl_exec($ch);
+    $resp = curl_exec($ch);
 
-		curl_close($ch);
-			
-		}catch(Exception $e){}
-		return $resp;
+    curl_close($ch);
+      
+    }catch(Exception $e){}
+    return $resp;
     }
 
 

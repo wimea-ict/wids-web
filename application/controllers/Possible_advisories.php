@@ -33,6 +33,33 @@ class Possible_advisories extends CI_Controller
 	$data['change'] = 74;
 	$this->load->view('template', $data);	
    }
+public function word()
+    {
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment;Filename=sub_region.doc");
+
+        $data = array(
+            'possible_advisories_data' => $this->Possible_advisories_model->get_all(),
+            'start' => 0
+        );
+        
+        $this->load->view('possible_advisories_doc',$data);
+    }
+	
+	 public function pdf()
+    {
+        $data = array(
+			'possible_advisories_data' => $this->Possible_advisories_model->get_all(),
+            'start' => 0
+        );
+        
+        ini_set('memory_limit', '10G');
+        $html = $this->load->view('possible_advisories_doc', $data, true);
+        $this->load->library('pdf');
+        $pdf = $this->pdf->load();
+        $pdf->WriteHTML($html);
+        $pdf->Output('possible_advisory.pdf', 'D'); 
+    }
    
    public function savedAdvisory(){
    	  $id = $this->input->post('id');

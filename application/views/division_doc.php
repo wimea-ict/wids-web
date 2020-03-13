@@ -21,7 +21,7 @@
         </style>
     </head>
     <body>
-        <h2>Daily_forecast List</h2>
+        <h2>Division List</h2>
         <table class="word-table" style="margin-bottom: 10px">
             <tr>
                <th width="80px">No</th>

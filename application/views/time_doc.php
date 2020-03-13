@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>harviacode.com - codeigniter crud generator</title>
-       
+        <!-- Amoko-------------------------------- -->
         <link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap.min.css') ?>"/>
-        
+        <!-- Amoko-------------------------------- -->
         <style>
             .word-table {
                 border:1px solid black !important; 
@@ -38,7 +38,7 @@
                 <td><?php  echo $re->to_time;?></td>
             </td>
                 <?php  } ?>
-            
+            <!-- Amoko-------------------------------- -->
             
         </table>
     </body>

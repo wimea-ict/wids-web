@@ -36,20 +36,20 @@
 				   
 					}?>
                </select> </td>
-        </tr>
-        <tr><td> <?php echo $division_type; ?>:</td>
-                <td colspan="4"> <select name="division" class="form-control">                
-                         <?php 
-					  if(isset($division_data)){
-						  foreach($division_data as $fd){
-							  ?>
-                              <option value="<?php echo $fd['id']; ?>"><?php echo $fd['division_name']; ?></option>
+        <!-- </tr>
+         <tr><td> <?php //echo $division_type; ?>:</td>
+                <td colspan="4"> <select name="division" class="form-control">     -->            
+                         <?php
+					 // /if(isset($division_data)){
+						//   foreach($division_data as $fd){
+							  ?><!-- 
+                              <option value="<?php //echo $fd['id']; ?>"><?php //echo $fd['division_name']; ?></option> -->
                               <?php 							  
-						  }
-						 }					
+						// }
+						// }					
 					?>    
-               </select> </td>
-            </tr>   
+             <!--  </select> </td>
+            </tr>   --> 
         <tr>
        		<td>Mean Temp <?php echo form_error('mean_temp') ?></td>
             <td><input type="number" class="form-control" name="mean_temp" id="mean_temp" placeholder="Mean Temp" value="<?php echo $mean_temp; ?>" />

@@ -22,8 +22,8 @@
         $link = "index.php/Daily_forecast/create_advisory_form/".$this->uri->segment(3);
         //echo anchor(site_url('index.php/Advisory/excel'), ' <i class="fa fa-file-excel-o"></i> Excel', 'class="btn btn-primary btn-sm"'); ?>
 		<?php $this->session->set_flashdata('message', ''); 
-		echo anchor(site_url('index.php/Advisory/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
-		<?php echo anchor(site_url('index.php/Advisory/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?>
+		echo anchor(site_url('index.php/Advisory/dailyadvisory_word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
+		<?php echo anchor(site_url('index.php/Advisory/dailyadvisory_pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?>
       
         <?php if($this->uri->segment(3) != NULL) echo anchor(site_url($link ), '<i class="fa fa-plus"></i> Add New', 'class="btn btn-primary btn-sm"'); ?>
 
@@ -59,7 +59,7 @@
 			echo anchor(site_url('index.php/Daily_forecast/read/'.$ad['id']),'<i class="fa fa-eye"></i>',array('title'=>'detail','class'=>'btn btn-primary btn-sm')); 
 			    //echo anchor(site_url('index.php/Advisory/update/'.$advise->record_id),'<i class="fa fa-pencil-square-o"></i>',array('title'=>'edit','class'=>'btn btn-primary btn-sm')); 
 			    echo '  '; 
-			    echo anchor(site_url('index.php/Advisory/delete/'.$ad['id']),'<i class="fa fa-trash-o"></i>','title="delete" class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Are You Sure ?\')"'); 
+			    echo anchor(site_url('index.php/Daily_forecast/delete_ad/'.$ad['id']),'<i class="fa fa-trash-o"></i>','title="delete" class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Are You Sure ?\')"'); 
 			     
             ?>
 		    </td>

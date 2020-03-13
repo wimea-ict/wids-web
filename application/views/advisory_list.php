@@ -19,7 +19,7 @@
                 <div class='box-header'>
                   <h3 class='box-title'>SEASONAL ADVISORY LIST 
         <?php 
-        $link = "index.php/Advisory/create/".$forecast_id;
+        $link = "index.php/Advisory/create/".$this->uri->segment(3);
         //echo anchor(site_url('index.php/Advisory/excel'), ' <i class="fa fa-file-excel-o"></i> Excel', 'class="btn btn-primary btn-sm"'); ?>
 		<?php $this->session->set_flashdata('message', ''); 
 		echo anchor(site_url('index.php/Advisory/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>

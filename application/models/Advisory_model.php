@@ -7,7 +7,7 @@ class Advisory_model extends CI_Model
 {
 
     public $table = 'advisory';
-    public $id = 'record_id';
+    public $id = 'id';
     public $order = 'DESC';
     public $TS = 'TS';
     public $transaction_table = 'ussdtransaction';
@@ -79,16 +79,19 @@ function get_health_advice($division, $identifier){
 
 
     // get all
-    function get_all()
-    {	
-		    $this->db->select('minor_sector.minor_name, advisory.id,advisory.sector,advisory.forecast_id,advisory.advice,advisory.message_summary,seasonal_forecast.season_id,seasonal_forecast.year,season_months.abbreviation');
-		$this->db->from('advisory');
-		$this->db->join('seasonal_forecast','advisory.forecast_id=seasonal_forecast.id');
-		$this->db->join('season_months','seasonal_forecast.season_id=season_months.id'); 
-		$this->db->join('minor_sector','minor_sector.id=advisory.sector');  
-		$this->db->order_by('advisory.TS', $this->order);	
-		   
-		$query=$this->db->get();   
+    function get_all($id=NULL)
+    {   
+            $this->db->select('major_sector.sector_name, advisory.id,advisory.sector,advisory.forecast_id,advisory.advice,advisory.message_summary,seasonal_forecast.season_id,seasonal_forecast.year,season_months.abbreviation');
+        $this->db->from('advisory');
+        $this->db->join('seasonal_forecast','advisory.forecast_id=seasonal_forecast.id');
+        $this->db->join('season_months','seasonal_forecast.season_id=season_months.id'); 
+        $this->db->join('major_sector','major_sector.id=advisory.sector');  
+        if(isset($id)){
+            $this->db->where("advisory.forecast_id",$id);
+        }
+        $this->db->order_by('advisory.TS', $this->order);   
+           
+        $query=$this->db->get();   
        return $query->result_array();
       
     }

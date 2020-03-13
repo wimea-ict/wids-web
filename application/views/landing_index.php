@@ -8,17 +8,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
      <section class="content-header">
         <div>
-        <h1>
-            Home
+        <h1>Home
             <small>System Statistics</small>                        
         <small class="pull-right">
-
-        <?php //if($_SESSION['usertype']=='wimea' && $_SESSION['first_time_login']==0){?>
-            
-        <!--<a href="<?php echo base_url(); ?>index.php/Auth/change_pass"><button type="button" class="btn">change password</button></a> -->
-        <a href="<?php echo base_url(); ?>index.php/Landing/create_user"><button type="button" class="btn">Add User</button></a>
-        <a href="<?php echo base_url(); ?>index.php/Landing/user_list"><button type="button" class="btn">View Active Users</button></a>
-        <a href="<?php echo base_url(); ?>index.php/Landing/inactive_user_list"><button type="button" class="btn">View Deactivated Users</button></a> 
        <?php if($_SESSION['usertype'] != 'wimea' && $_SESSION['first_time_login']==1){?> 
        <a href="<?php echo base_url(); ?>index.php/Auth/change_pass"><button type="button" class="btn"><strong>Change Password</strong></button></a> 
        <?php }?>                         
@@ -79,10 +71,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="info-box">
-                <span class="info-box-icon bg-green"><i class="ion-ios-cloudy-night-outline"></i></span>
+                <span class="info-box-icon bg-green"><i class="glyphicon glyphicon-phone"></i></span>
 
                 <div class="info-box-content">
-                    <span class="info-box-text">Daily Forecast</span>
+                    <span class="info-box-text">USSD REQUESTS</span>
                     <span class="info-box-number"><?php echo $count_daily_forecast; ?></span>
                 </div>
                 <!-- /.info-box-content -->
@@ -126,7 +118,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <span class="info-box-icon bg-green"><i class="ion-ios-partlysunny-outline"></i></span>
 
             <div class="info-box-content">
-                <span class="info-box-text">Seasons</span>
+                <span class="info-box-text">Number of users</span>
                 <span class="info-box-number"><?php echo $count_season; ?></span>
             </div>
             <!-- /.info-box-content -->
@@ -151,8 +143,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <span class="info-box-icon bg-orange"><i class="ion-android-contacts"></i></span>
 
             <div class="info-box-content">
-                <span class="info-box-text">Advisories</span>
-                <span class="info-box-number"><?php echo $count_advisory; ?></span>
+                <span class="info-box-text">DISTRICTS</span>
+                <span class="info-box-number"><?php echo $count_division; ?></span>
             </div>
             <!-- /.info-box-content -->
         </div>

@@ -94,5 +94,34 @@ class Minor_sector extends CI_Controller
 		
 	}
 	//----------------------the end--------------------------------
+
+	public function word()
+    {
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment;Filename=minor_sector.doc");
+
+
+        $data = array(
+            'minor_sector_data' => $this->Minor_sector_model->get_all(),
+            'start' => 0
+        );
+        
+        $this->load->view('minor_doc',$data);
+    }
+	
+	 public function pdf()
+    {
+        $data = array(
+			'minor_sector_data' => $this->Minor_sector_model->get_all(),
+            'start' => 0
+        );
+        
+        ini_set('memory_limit', '10G');
+        $html = $this->load->view('minor_doc', $data, true);
+        $this->load->library('pdf');
+        $pdf = $this->pdf->load();
+        $pdf->WriteHTML($html);
+        $pdf->Output('minor_sector.pdf', 'D'); 
+    }
 	
 }//end of the class 

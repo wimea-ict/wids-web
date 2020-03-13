@@ -25,7 +25,7 @@
 				   $idd = $this->uri->segment(3);
 				   $link = site_url('index.php/Season/createregionforecast/'.$idd);
 				   ?>
-		<?php echo anchor(site_url('index.php/season/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
+		<?php echo anchor(site_url('index.php/season/wording'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
 		<?php echo anchor(site_url('index.php/season/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?>
         <?php echo anchor($link, '<i class="fa fa-file-pdf-o"></i> Add New', 'class="btn btn-primary btn-sm"'); ?>
         </h3>

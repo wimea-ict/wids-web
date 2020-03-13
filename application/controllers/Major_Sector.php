@@ -32,6 +32,7 @@ class Major_Sector extends CI_Controller
 	public function displayMajorForm(){
 		
 	$data['change'] = 62;
+    $data['languages'] = $this->Major_model->get_languages()->result();
 	$this->load->view('template', $data);	
    }
    
@@ -40,6 +41,7 @@ class Major_Sector extends CI_Controller
    	    $id = $this->input->post('id');
    	    
 	    $datatoinsert = array(
+            'language_id' => $this->input->post('language', TRUE),
        		 'sector_name' => $this->input->post('sector_name',TRUE)		    
 	    );
 	    //====== checking the presence of $id==========
@@ -48,6 +50,7 @@ class Major_Sector extends CI_Controller
         } else {
 
             $datatoinsert1 = array(
+                'language_id' => $this->input->post('language', TRUE),
        		 'sector_name' => $this->input->post('sector_name',TRUE)		    
 	       );
 
@@ -81,7 +84,34 @@ class Major_Sector extends CI_Controller
            $this->load->view('template', $data);
         }
     }
+	public function word()
+    {
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment;Filename=Major_Sector.doc");
+
+        $data = array(
+            'major_data'=> $this->Major_model->get_all(),
+            'start' => 0
+        );
+        
+        $this->load->view('major_sector_doc',$data);
+    }
 
     
 	//----------------------the end--------------------------------
+	
+	 public function pdf()
+    {
+        $data = array(
+			'major_data'=> $this->Major_model->get_all(),
+            'start' => 0
+        );
+        
+        ini_set('memory_limit', '10G');
+        $html = $this->load->view('major_sector_doc', $data, true);
+        $this->load->library('pdf');
+        $pdf = $this->pdf->load();
+        $pdf->WriteHTML($html);
+        $pdf->Output('Major_Sector.pdf', 'D'); 
+    }
 }//end of the class 

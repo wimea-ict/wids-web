@@ -87,6 +87,10 @@
 
 
 
+
+
+
+
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.5 -->
     <link rel="stylesheet" href="<?php echo base_url() ?>assets/frameworks/bootstrap/css/bootstrap.min.css">
@@ -246,7 +250,7 @@
     <div class="pac-card" id="pac-card">
       <div>
         <div id="title">
-          Autocomplete search
+          Autocomplete Search
         </div>
         <div id="type-selector" class="pac-controls">
           <input type="radio" name="type" id="changetype-all" checked="checked">
@@ -268,7 +272,7 @@
       </div>
       <div id="pac-container">
         <input id="pac-input" type="text"
-            placeholder="Enter a location">
+            placeholder="Enter your  location">
       </div>
     </div>
     <div id="map"></div>
@@ -360,10 +364,10 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h2 class="modal-title"><?php echo $a; ?></h2>
+                                <h2 class="modal-title"><?php echo "Daily Forecast"; ?></h2>
                             </div>
                            <div class="grid_3 grid_5">
-         <h3 class="head-top">Agriculture Advisory</h3>
+         <h3 class="head-top">Daily Forecast</h3>
          <div class="but_list">
            <div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
             <ul id="myTab" class="nav nav-tabs" role="tablist">
@@ -453,7 +457,7 @@
                                <span id="daily"></span>
                           </h2>
                            <div class="grid_3 grid_5">
-         <h3 class="head-top">Food Sector Advisory</h3>
+         <h3 class="head-top">Seasonal Forecast</h3>
          <div class="but_list">
            <div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
             <ul id="myTab" class="nav nav-tabs" role="tablist">
@@ -657,69 +661,6 @@
 <script type="text/javascript" src="<?php echo base_url() ?>assets/frameworks/gritter/gritter-conf.js"></script>
 
     <!--script for this page-->
-
-<script type="text/javascript">
-        $(document).ready(function () {
-        var unique_id = $.gritter.add({
-            // (string | mandatory) the heading of the notification
-            title: 'ALERT NOTIFICATION!',
-            // (string | mandatory) the text inside the notification
-            text: ' <b/>WARNING<b/><br/> <?php  $sqlx = "SELECT AVG(d03)  AS average FROM  data";
-                           $sql2= $this->db->query($sqlx);
-
-                            $sqlx2 = "SELECT AVG(d02)  AS average FROM  data";
-                           $sql4= $this->db->query($sqlx2);
-
-
-                            $sqlx3 = "SELECT AVG(d01)  AS average FROM  data";
-                           $sql6= $this->db->query($sqlx3);
-
-                           foreach ($sql2->result_array() as $row1) {
-
-                          echo" <tr> ";
-                           echo" <td>EASTERN AVERAGE:".  $row1["average"]."mm</td><br/><br/>";
-
-                           if($row1["average"] > 5){
-
-                            echo "<td>This is a warning to the people of the EASTERN REGION, heavy rains are expected to arrive in this region and may lead to landslides in the area spanning a region of 4 miles.<br/><br/>";
-
-                           } else{
-                                echo "<td>This is a warning to the people of the WESTERN REGION, dry spells of drought are in the forcast and may last for as long as 3 months with no rain. You are advised to collect and store water and preserve water bodies.<br/><br/>";
-
-                           }
-                           
-            
-            } 
-
-                           foreach ($sql4->result_array() as $row2) {
-
-                          echo" <tr> ";
-                           echo" <td>WESTERN AVERAGE:".  $row2["average"]."mm</td><br/><br/>";
-
-                           if($row2["average"] > 5){
-
-                            echo "<td>This is a warning to the people of the people of the EASTERN REGION, heavy rains are expected to arrive in this region and may lead to landslides in the area spanning a region of 4 miles.";
-
-                           }
-                           
-            
-            } 
-
-
-             ?>  ',
-            // (string | optional) the image to display on the left
-          //  image: 'assets/img/ui-sam.jpg',
-            // (bool | optional) if you want it to fade out on its own or just sit there
-            sticky: false,
-            // (int | optional) the time you want it to be alive for before fading out
-            time: '10000',
-            // (string | optional) the class name you want to apply to that specific message
-            class_name: 'my-sticky-class'
-        });
-
-        return false;
-        });
-  </script>
 
 
 

@@ -34,6 +34,36 @@ class Season_names extends CI_Controller
 	$data['change'] = 68;
 	$this->load->view('template', $data);	
    }
+public function word()
+    {
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment;Filename=season_name.doc");
+
+        $data = array(
+          'seasons_data'=> $this->Season_names_model->get_all(),
+            'start' => 0
+        );
+        
+        $this->load->view('season_name_doc',$data);
+    }
+   
+   
+public function pdf()
+{
+	$seasons = $this->Season_names_model->get_all();
+
+	$data = array(
+		'seasons_data' => $seasons,
+		'start' => 0
+	);
+	
+	ini_set('memory_limit', '10G');
+	$html = $this->load->view('season_name_doc', $data, true);
+	$this->load->library('pdf');
+	$pdf = $this->pdf->load();
+	$pdf->WriteHTML($html);
+	$pdf->Output('season.pdf', 'D'); 
+}
    
    
    public function saveSeasonName(){

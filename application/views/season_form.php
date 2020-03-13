@@ -58,6 +58,7 @@ $gen = '';
                       <div class='box box-primary'>
         <form action="<?php echo site_url($url); ?>" method="post" enctype="multipart/form-data" ><table class='table table-bordered'>
           <?php  if($this->uri->segment(2) != 'update'){?>
+           
             <tr><td>Season:</td>
            <td> 
            <select name="season_id" class="form-control" id="season">

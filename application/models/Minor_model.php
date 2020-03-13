@@ -39,6 +39,10 @@ class Minor_model extends CI_Model
     return $query;
 }
  
+    function get_categories(){
+        $query = $this->db->get('minor_sector');
+        return $query;  
+    }
    //---------------------------------
   // get data by id
     function get_by_id($id)

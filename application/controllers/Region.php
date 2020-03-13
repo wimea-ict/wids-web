@@ -116,7 +116,7 @@ class Region extends CI_Controller
         );
         
         ini_set('memory_limit', '10G');
-        $html = $this->load->view('region_pdf', $data, true);
+        $html = $this->load->view('region_doc', $data, true);
         $this->load->library('pdf');
         $pdf = $this->pdf->load();
         $pdf->WriteHTML($html);

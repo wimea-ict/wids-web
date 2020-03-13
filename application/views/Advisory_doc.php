@@ -19,14 +19,13 @@
         </style>
     </head>
     <body>
-        <h2>Advisory List</h2>
+        <h2>Seasonal Advisory List</h2>
         <table class="word-table" style="margin-bottom: 10px">
             <tr>
-    			<th width="80px">No</th>
+                <th width="80px">No</th>
                 <th>Sector</th>
                 <th>Forecast</th>
-                <th>Advice</th>
-                <th>Summary</th>
+                <th>Advisory Summary</th>
             </tr>
             <?php
             $start = 0;
@@ -34,9 +33,8 @@
                 ?>
                 <tr>
                     <td><?php echo ++$start ?></td>
-                    <td><?php  echo $ad['minor_name'] ; ?></td>
-                    <td><?php  echo $ad['abbreviation']."(".$ad['year'].")";  ?></td>
-                    <td><?php echo $ad['advice']; ?></td>                   
+                    <td><?php  echo $ad['sector_name'] ; ?></td>
+                    <td><?php  echo $ad['abbreviation']."(".$ad['year'].")";  ?></td>                 
                     <td> <?php echo $ad['message_summary']; ?></td>                 
                     
             <?php 

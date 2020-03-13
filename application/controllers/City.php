@@ -37,6 +37,21 @@ class City extends CI_Controller
         $this->load->view('city_doc',$data);
     }
     //--------------------------------
+	
+	public function pdf()
+    {
+        $data = array(
+          'city_data' => $this->City_model->get_all(),
+          'start' => 0
+        );
+        
+        ini_set('memory_limit', '10G');
+        $html = $this->load->view('city_doc', $data, true);
+        $this->load->library('pdf');
+        $pdf = $this->pdf->load();
+        $pdf->WriteHTML($html);
+        $pdf->Output('city.pdf', 'D'); 
+    }
 public function savecity(){
       $id = $this->input->post('id');
       $datatoinsert = array(

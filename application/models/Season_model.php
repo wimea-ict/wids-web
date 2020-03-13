@@ -15,6 +15,33 @@ class Season_model extends CI_Model
     {
         parent::__construct();
     }
+        function no_data()
+    {  
+       $year = date('Y');
+               $this->db->select('region.region_name, area_seasonal_forecast.region_id,seasonal_forecast.year');
+        $this->db->distinct('region.region_name');
+       $this->db->from('area_seasonal_forecast');
+       $this->db->join('seasonal_forecast','seasonal_forecast.id = area_seasonal_forecast.forecast_id');
+       $this->db->join('region','area_seasonal_forecast.region_id = region.id'); 
+       $this->db->order_by('seasonal_forecast.year', $this->order);
+       $this->db->where('seasonal_forecast.year', $year);  
+       $query=$this->db->get();   
+       return $query->result_array();
+    
+    } 
+
+
+      //---------------------get language available--------------------------------
+      function get_available_language()
+    {   
+       $this->db->select('language,id as language_id');
+     $this->db->from('ussdmenulanguage');
+     $query=$this->db->get();
+   
+       return $query->result_array();
+  }
+    //-----------------------------------------------------
+
 
     // get allgetdivisionname
     function get_all()
@@ -186,31 +213,47 @@ public  function get_forecast_area($id=NULL){
         // New Method with advisories
      function get_season_data($id, $division)
     {  
-        $this->db->select('seasonal_forecast.issuetime, seasonal_forecast.year, season_months.abbreviation, seasonal_forecast.overview, seasonal_forecast.general_forecast, seasonal_forecast.map, region.region_name, sub_region.sub_region_name, area_seasonal_forecast.overall_comment');
+
+      $language_id = 1;//default for english
+        $this->db->select('seasonal_forecast.issuetime, seasonal_forecast.year, season_months.abbreviation, seasonal_forecast.overview, seasonal_forecast.general_forecast, seasonal_forecast.map, main_regions.region_name, sub_region.sub_region_name, area_seasonal_forecast.overall_comment');
         $this->db->from('division');
-        $this->db->join('region','division.region_id = region.id');
-        $this->db->join('area_seasonal_forecast','area_seasonal_forecast.region_id =  division.region_id');
+        $this->db->join('main_regions','division.main_region = main_regions.id');
+        $this->db->join('area_seasonal_forecast','area_seasonal_forecast.region_id =  division.main_region');
         $this->db->join('sub_region','area_seasonal_forecast.subregion_id = sub_region.id');
         $this->db->join('seasonal_forecast','area_seasonal_forecast.forecast_id = seasonal_forecast.id');
         $this->db->join('season_months','seasonal_forecast.season_id = season_months.id');
         //$this->db->where('seasonal_forecast.id', $id);
         $this->db->where('division.id', $division);
+         $this->db->where('area_seasonal_forecast.language_id', $language_id);
         $this->db->order_by('area_seasonal_forecast.id','DESC');
        $query=$this->db->get();   
        return $query->result_array();
     
     }function get_advice($division){
-        $this->db->select('message_summary,seasonal_forecast.year, sub_region_name, division_name, region_name, minor_name, abbreviation');
+
+        $this->db->select('advisory.id,advice,message_summary,seasonal_forecast.year, minor_name');
         $this->db->from('advisory');
-        $this->db->join('area_seasonal_forecast', 'advisory.forecast_id = area_seasonal_forecast.forecast_id');
-        $this->db->join('region', 'area_seasonal_forecast.region_id = region.id');
-        $this->db->join('sub_region','area_seasonal_forecast.subregion_id = sub_region.id');
-        $this->db->join('division','area_seasonal_forecast.region_id = division.region_id');
-        $this->db->join('minor_sector', 'advisory.sector = minor_sector.id');
-        $this->db->join('seasonal_forecast', 'advisory.forecast_id = seasonal_forecast.id');
-        $this->db->join('season_months', 'seasonal_forecast.season_id = season_months.id');
-        $this->db->order_by('advisory.id','DESC');
-        $this->db->where('division.id', $division);
+        $this->db->join('minor_sector','advisory.sector = minor_sector.id');
+        $this->db->join('major_sector','major_sector.id = minor_sector.major_id');
+        $this->db->join('seasonal_forecast ',' advisory.forecast_id = seasonal_forecast.id');
+        $this->db->join('area_seasonal_forecast ',' advisory.forecast_id = area_seasonal_forecast.forecast_id');
+        $this->db->join('division ',' area_seasonal_forecast.region_id = division.main_region');
+        $this->db->where('division.id',$division);
+        $this->db->where('major_sector.language_id',1);
+        $this->db->group_by('advisory.id');
+
+
+        // $this->db->select('message_summary,seasonal_forecast.year, sub_region_name, division_name, region_name,advice, minor_name, abbreviation');
+       
+        // $this->db->join('area_seasonal_forecast', 'advisory.forecast_id = area_seasonal_forecast.forecast_id');
+        // $this->db->join('region', 'area_seasonal_forecast.region_id = region.id');
+        // $this->db->join('sub_region','area_seasonal_forecast.subregion_id = sub_region.id');
+        // $this->db->join('division','area_seasonal_forecast.region_id = division.region_id');
+        // $this->db->join('minor_sector', 'advisory.sector = minor_sector.id');
+        // $this->db->join('seasonal_forecast', 'advisory.forecast_id = seasonal_forecast.id');
+        // $this->db->join('season_months', 'seasonal_forecast.season_id = season_months.id');
+        // $this->db->order_by('advisory.id','DESC');
+        // $this->db->where('division.id', $division);
         $qy = $this->db->get();
         return $qy->result_array();
 
@@ -264,6 +307,27 @@ public  function get_forecast_area($id=NULL){
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
     }
+
+  // 2020 changes////////////
+
+    function forecast_checker($reg, $subreg, $lang)
+    {
+      $this->db->select('region_id, subregion_id');
+      $this->db->from('area_seasonal_forecast');
+      $this->db->where('region_id', $reg);
+      $this->db->where('subregion_id',$subreg);
+      $this->db->where('language_id', $lang);
+      $query=$this->db->get();
+      return $query->result_array();
+    }
+
+    function delete1($id)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->delete("area_seasonal_forecast");
+    }
+
+ // 2020 changes////////////
 
     //get farmers to send message
     function getfarmers($region,$sub_region,$season){

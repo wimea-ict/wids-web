@@ -29,8 +29,11 @@
         	<td> Sector Name <?php echo form_error('sector_id') ?></td>
            <td>
              <select id ="sector_id" name="sector_id" class="form-control">
-             <?php foreach($possible_advisories_data as $re){ ?>
-             <option value="<?php echo $re['cat']; ?>"><?php echo $re['minor_name']; ?></option>
+             <?php
+                     $sqlx = "SELECT * FROM  minor_sector";
+                            $sql2= $this->db->query($sqlx);
+               foreach ($sql2->result_array() as $re) { ?>
+             <option value="<?php echo $re['id']; ?>"><?php echo $re['minor_name']; ?></option>
 
              <?php } ?>
              </select>

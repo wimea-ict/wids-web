@@ -25,7 +25,10 @@ class Major_model extends CI_Model
     }
   // get data by id
 
-
+    function get_languages(){
+        $query = $this->db->get('ussdmenulanguage');
+        return $query;  
+    }
     function get_by_id($id=NULL)
     {  
      $this->db->from('major_sector'); 

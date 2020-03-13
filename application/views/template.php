@@ -84,48 +84,97 @@
             <header class="main-header">
                 <!-- Logo -->
                 <a href="#" class="logo">
-                    <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini"><b>W</b>IDS</span>
-                <!-- logo for regular state and mobile devices --></a>
-                <!-- Header Navbar: style can be found in header.less -->
+                   <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>W</b>IDS</span>
+              <!-- logo for regular state and mobile devices -->
+              <span class="logo-lg" ><h5>WEATHER INFORMATION DISSEMINATION SYSTEM</h5></span>
+              
+          </a>
+          <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top" role="navigation">
                     <!-- Sidebar toggle button-->
+                    
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
+                        <span class="sr-only">Toggle navigation</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WEATHER INFORMATION DISSEMINATION SYSTEM (UGANDA)
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <div class="navbar-custom-menu">
+                
+                    
+
+<div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
 
-                     <!-- notification toggle -->
-                     <?php $count = 0;
-                      $currentM = date("M");
-                      $currentY = date("Y");
-                      					
-                     ?>
+            <!-- notification toggle------------------------------ -->
+
+                     <?php
+                        //------------------------------------------
+                          $year = date('Y');
+                         $no_data = "SELECT DISTINCT ('region.region_name,area_seasonal_forecast.region_id,area_seasonal_forecast.region_id') from area_seasonal_forecast join seasonal_forecast on seasonal_forecast.id = area_seasonal_forecast.forecast_id join region on area_seasonal_forecast.region_id = region.id where seasonal_forecast.year = '".$year."'";
+                            $no_forecasts = $this->db->query($no_data);
+                            $count = 0;
+                              $Snotification =[]; 
+                              foreach ($no_forecasts->result_array()  as $dd) {
+                                 $region_name = $dd['region_name'];
+                                 $Snotification[] = $region_name; 
+                              }
+                             foreach ($Snotification as $val ) {
+                                        $dd = "SELECT  distinct region_name FROM region where not region_name like '".$val."' ";
+                                        $ddd = $this->db->query($dd);
+                                        foreach ($ddd->result_array() as $rowss) {     
+                                       $count++; 
+                            }}                             
+                             ?>
+            <!-- end--------------------------------------------------- -->
+                             
                              <li class="dropdown">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
                                 
                                 <span class="label label-pill label-danger count" style="border-radius:10px;"></span> <span class="glyphicon glyphicon-bell" style="font-size:18px;"></span>
-                                <?php 
+             <!-- --------------------------new code -->
+                                <?php
                                     if($count > 0){
                                         ?>
-                                         <span class="badge" style="position: absolute; top: 5px; right: 4px; padding: 4px 6px; border-radius: 60%; background: red; color: white;"><?php echo $count; ?></span>
+                                         <span class="badge" style="position: absolute; top: 5px; right: 4px; padding: 4px 6px; border-radius: 60%; background: red; color: white;">
+                                            <?php echo $count; ?></span>
                                       <?php 
                                     }
                                 ?>
+                <!-- ------------------------------------- -->
                              </a>
                              <ul class="dropdown-menu">
+                                   
+
+                 <!--==================================================================  -->
+                                    <?php
+
+                                    if($count > 0){
+                                    foreach ($Snotification as $val ) {
+                                      
+                                        $dd = "SELECT distinct region_name FROM region where not region_name like '".$val."' ";
+                                        $ddd = $this->db->query($dd);
+                                        foreach ($ddd->result_array() as $rowss) {   
+                                            ?>
+                                            <li>
+                                    <a href="#">
+                                           <?php 
+                                           echo $rowss['region_name']." seasonal forecast is missing <br/>"; ?></a>  
+                                            </li>   
+                                            <?php                                  
+                                  }
+                              }
+                             }else{
+                                     echo "No forecasts added yet!";
+                                    }
                                 
-                                    
+                                    ?>
+                                 
+        <!-- ================================================================================== -->
+
                                                                       
-                             <SPAN style="font-weight:bold; color:white">WIDS</SPAN>
                              </ul>
                              </li>
-                             <!-- User Account: style can be found in dropdown.less -->
-                            <li class="dropdown user user-menu"> 
+                             <!-- User Account: style can be found in dropdown.less -->				<li class="dropdown user user-menu"> 
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="<?php echo base_url()?>assets/<?php echo $this->config->item('theme');?>/frameworks/adminlte/img/avatar5.png" class="user-image" alt="User Image">
                                     <span class="hidden-xs"><?php echo $_SESSION['username']; ?></span>
@@ -451,6 +500,14 @@
                   }
                   else if($change == 87){
                     $this->load->view('dekadal_advisory_read');
+                  } else if($change == 88){
+                    $this->load->view('USSD_list');
+                  }else if($change == 89){
+                    $this->load->view('USSD_lang_form');
+                  }else if($change == 90){
+                    $this->load->view('USSD_read');
+                  }else if($change == 91){
+                    $this->load->view('CSV_view');
                   }
                 ?>
                 
