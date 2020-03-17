@@ -216,6 +216,8 @@ class User_feedback_model extends CI_Model
          $curD = "SELECT Count(menuvalue) AS 'D' from ussdtransaction_new WHERE date like '$currentYear%' AND menuvalue like 'Monthly%'";
          $Disaster = $this->db->query($curD)->result_array();
 
+         $total_requests = $AgricC + $weather + $Disaster;
+
          // $curWa = "SELECT Count(Level0) AS 'W' from ussdtransaction WHERE RecordDate like '$currentYear%' AND Level0 like 'water%'";
          // $water = $this->db->query($curWa)->result_array();
 

@@ -20,9 +20,14 @@ class Landing_model extends CI_Model {
         return $query;
     }
     public function get_count_USSD()
-    {
-        $query = "400";
-        return $query;
+    { 
+        $date = date("Y-m-d");
+         $this->db->select('COUNT(*)');
+         $this->db->from('ussdtransaction_new');
+         $this->db->like('menuvariable', "product");//to
+         // $this->db->like('date', "$date%");//to
+        //return $query;
+        return $this->db->count_all_results();
     }
     //count number of ussd on request
     public function ussd($from,$to){

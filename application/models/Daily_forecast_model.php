@@ -17,6 +17,38 @@ class Daily_forecast_model extends CI_Model
         parent::__construct();
     }
 
+    function delete($id)
+    {
+        $this->db->where("id", $id);
+        $this->db->delete("daily_forecast_data");
+    }
+    function delete1($id)
+    {
+        $this->db->where("id", $id);
+        $this->db->delete("daily_forecast");
+        $this->db->where("forecast_id", $id);
+        $this->db->delete("daily_forecast_data");
+    }
+
+
+     function get_update($id)
+    {
+      $this->db->select('daily_forecast.id,daily_forecast.date,daily_forecast.weather,daily_forecast.time,daily_forecast.issuedate,daily_forecast.validitytime, daily_forecast.dutyforecaster, ussdmenulanguage.language');
+      $this->db->from('daily_forecast');
+      $this->db->join('ussdmenulanguage','daily_forecast.language_id = ussdmenulanguage.id');
+       $this->db->where('daily_forecast.id', $id);
+      $query=$this->db->get();
+       return $query->result_array();
+        // $this->db->order_by($this->id, $this->order);
+        // return $this->db->get($this->table)->result();
+    }
+
+    function updating($id, $wet=array())
+     {
+        $sql = "UPDATE $this->table SET issuedate= ? ,validitytime = ? , date = ? ,weather = ? WHERE id = $id";
+       return $this->db->query($sql, $wet);
+     }
+
     function forecast_checker($date, $time)
     {
       $this->db->select('date, time');
@@ -418,13 +450,7 @@ function get_daily_forecast_data_for_region1($forecast_id,$division_id){
      }
 
     // delete data
-    function delete($id)
-    {
-        $this->db->where($this->id, $id);
-        $this->db->delete($this->table);
-        $this->db->where("forecast_id", $id);
-        $this->db->delete("daily_forecast_data");
-    }
+    
 
     function delete_ad($id)
     {
