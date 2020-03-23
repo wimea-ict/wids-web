@@ -20,6 +20,87 @@ class Season extends CI_Controller
 		  $this->load->model('Sub_region_model');
     }
 
+
+///////////////////////// Amoko///////////////////
+    public function audio_list()
+    { 
+        $data = array(
+            'change' => 92,
+            'clips' => $this->Season_model->get_clips()
+        );
+        $this->load->view('template',$data);
+    }
+    public function audio()
+    { 
+        $data = array(
+            'change' => 93,
+            'language' => $this->Season_model->get_available_language()
+        );
+        $this->load->view('template',$data);
+    }
+    public function audio_delete()
+    { 
+        $this->Season_model->delete_clip($this->uri->segment(3));
+        $this->session->set_flashdata('message', '<font color="green" size="5">Voice Clip Deleted</font>'); 
+        $data['change'] = 92;
+        $this->load->view('template',$data);
+    }
+
+    public function audio_upload()
+    { 
+        $path = $_SERVER['DOCUMENT_ROOT'].'/wids/assets/audio/';
+        // $path = base_url('assets/audio/').'/';
+        
+        
+        
+        $file1 = $_FILES['audio_clip']['name'];
+        $lan = $this->input->post('lang');
+
+
+        $seasoned = "";
+        if($this->Season_model->get_abb($this->input->post('identity')) !== null){
+            foreach ($this->Season_model->get_abb($this->input->post('identity')) as $k) {
+                $seasoned = $lan."_".$k['abbreviation']."_".date('Y');
+            }
+
+            if($this->Season_model->check_audio($lan, $seasoned) == null){
+                $path = $path.basename($seasoned).".mp3";
+                list($txt, $ext) = explode(".", $file1);
+                $valid_formats = array('mp3','ogg','wav');
+                if(in_array($ext, $valid_formats)){
+                    $actual_image_name = $txt.".".$ext;
+                    $tmp = $_FILES['audio_clip']['tmp_name'];
+
+                    if(move_uploaded_file($_FILES['audio_clip']['tmp_name'], $path)){
+                        $datatoinsert = array(
+                            'language_id'   => $lan,
+                            'voice_name'    => $seasoned
+                        );
+                        $this->Season_model->upload_audio($datatoinsert);
+                        $this->session->set_flashdata('message', '<font color="green" size="5">Voice Clip Uploaded Successfully</font>');
+                        
+                    }else{
+                        $this->session->set_flashdata('message', '<font color="red" size="5">Upload Failed</font>');
+                    }
+                }else{
+                    $this->session->set_flashdata('message', '<font color="red" size="5">Unsupported file format</font>');
+                }
+            }else{
+                $this->session->set_flashdata('message', '<font color="red" size="5">Audio clip already exists</font>');
+            }
+            
+            
+        }else{
+            $this->session->set_flashdata('message', '<font color="red" size="5">No File</font>');
+        }
+        $this->audio_list();
+        
+
+    }
+///////////////////////// Amoko///////////////////
+
+
+
     public function index()
     { 
 	$season = $this->Season_model->get_all();
