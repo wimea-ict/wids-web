@@ -400,7 +400,7 @@ class Auth extends CI_Controller {
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
 	array_push($q,"CREATE TABLE `area_decadal_forecast` (
-  `id` int(10) NOT NULL,
+   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `region_id` int(10) NOT NULL,
   `subregion_id` int(10) NOT NULL,
   `dekadal_id` bigint(16) NOT NULL,
@@ -410,7 +410,7 @@ class Auth extends CI_Controller {
 
 
 	array_push($q,"CREATE TABLE `seasonal_forecast` (
-  `id` bigint(10) NOT NULL,
+ `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `overview` text,
   `year` int(4) NOT NULL,
   `general_forecast` text NOT NULL,
@@ -422,7 +422,7 @@ class Auth extends CI_Controller {
 		");
 		
 	array_push($q,"CREATE TABLE `area_seasonal_forecast` (
-  `id` int(11) NOT NULL,
+ `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `forecast_id` int(10) NOT NULL,
   `region_id` int(4) NOT NULL,
   `subregion_id` int(4) NOT NULL,
@@ -433,7 +433,8 @@ class Auth extends CI_Controller {
   `end_period` varchar(23) NOT NULL,
   `enddesc` varchar(23) NOT NULL,
   `overall_comment` text NOT NULL,
-  `general_info` text NOT NULL
+  `general_info` text,
+  `language_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 	
 			
@@ -513,12 +514,15 @@ class Auth extends CI_Controller {
 				(9, 'North Western','1');");						
 			
 	  }
+
 	//---------------the end-----------------------------
 		array_push($q,"CREATE TABLE `division` (
 		  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 		  `division_name` varchar(45) NOT NULL,
 		  `division_type` varchar(45) NOT NULL,
-		  `region_id` int(8) NOT NULL
+		  `region_id` int(8) NOT NULL,
+		  `sub_region_id` int(11) DEFAULT NULL,
+		  `main_region` int(11) DEFAULT NULL
 		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 		");
 
@@ -679,9 +683,10 @@ class Auth extends CI_Controller {
 
 	array_push($q,"CREATE TABLE `daily_forecast` (
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+ `language_id` int(11) NOT NULL,
   `weather` text,
   `date` date DEFAULT NULL,
-  `time` varchar(200) NOT NULL,
+  `time` varchar(11) DEFAULT NULL,
   `issuedate` date NOT NULL,
   `validitytime` varchar(30) NOT NULL,
   `dutyforecaster` varchar(30) NOT NULL,
@@ -706,7 +711,7 @@ class Auth extends CI_Controller {
 
 
 		array_push($q," CREATE TABLE `decadal_forecast` (
-  `id` int(11) NOT NULL,
+   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `date_from` date NOT NULL,
   `date_to` date NOT NULL,
   `issuedate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -761,16 +766,19 @@ class Auth extends CI_Controller {
 
 		array_push($q,"CREATE TABLE `major_sector` (
 		  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		  `language_id` int(11) NOT NULL,
 		  `sector_name` varchar(45) NOT NULL
 		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 		");
 		
 		
-		array_push($q,"INSERT INTO `major_sector` (`id`, `sector_name`) VALUES
-			(1, 'Agriculture and food security'),
-			(2, 'Health'),
-			(3, 'Construction '),			
-			(4, 'Water');");	
+		array_push($q,"INSERT INTO `major_sector` (`id`, `language_id`, `sector_name`) VALUES
+			(1, 1, 'Agriculture and food security'),
+			(2, 1, 'Health'),
+			(3, 1, 'Construction '),
+			(4, 1, 'Water'),
+			(5, 1, 'weather'),
+			(6, 1, 'Disaster Management ');");	
 			
 			
 	array_push($q,"CREATE TABLE IF NOT EXISTS `seasonal_forecast` (
@@ -803,7 +811,7 @@ class Auth extends CI_Controller {
 	
 	
 	  array_push($q,"CREATE TABLE `user_feedback` (
-  `id` int(20) NOT NULL,
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `city_id` int(10) NOT NULL,
   `sector` text NOT NULL,
   `accuracy` int(2) NOT NULL,
@@ -850,34 +858,36 @@ class Auth extends CI_Controller {
 	) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 	
 	 array_push($q,"INSERT INTO `menu` (`id`, `name`, `link`, `icon`, `is_active`, `is_parent`, `descrpition`) VALUES
-(1, 'Forecasts', '', 'ddd', 1, 0, 'forecast'),
+(1, 'Forecasts', '', 'fa fa-line-chart', 1, 0, 'forecast'),
 (2, 'Dekadal forecast', '/index.php/Dekadal_forecast/index', 'fa fa-cloud', 1, 1, 'one'),
 (3, 'Daily Forecast', '/index.php/Daily_forecast/index', 'fa fa-cloud', 1, 1, 'one'),
 (4, 'Seasonal Forecast', '/index.php/season/index', 'fa fa-cloud', 1, 1, 'one'),
-(8, 'Advisories', '/index.php/Advisory/index', 'ion-android-mail', 1, 0, 'one'),
+(8, 'Advisories', '/index.php/Advisory/index', 'fa fa-check-square-o', 1, 0, 'one'),
 (12, 'Forecast Advice', '/index.php/user_feedback/index', 'ion-android-mail', 1, 5, 'one'),
 (14, 'forecast graphs', '/index.php/graph/index', 'ion-arrow-graph-up-right', 0, 0, 'one'),
-(15, 'user feedback', '/index.php/user_feedback/readfeedback', 'ion-android-mail', 1, 0, 'one'),
-(16, 'STATISTICS', '/index.php/graph/index', 'ion-arrow-graph-up-right', 0, 0, 'statistics'),
-(17, 'feedback', '/index.php/User_feedback/index', '', 0, 0, 'statistics'),
-(18, 'ussd requests', 'index.php/graph/ussdRequest', '', 1, 20, 'ussd requests'),
-(19, 'ussd request trend', 'index.php/graph/trend', '', 1, 20, 'ussd request trend'),
-(20, 'Administrative Structures', '/index.php/Division/index', '', 1, 0, ''),
+(15, 'user feedback', '/index.php/user_feedback/readfeedback', 'fa fa-comments', 1, 0, 'one'),
+(16, 'STATISTICS', '/index.php/graph/index', 'fa fa-bar-chart', 1, 0, 'one'),
+(17, 'feedback', '/index.php/graph/feedback', '', 1, 16, 'one'),
+(18, 'ussd requests', 'index.php/graph/ussdRequest', '', 1, 16, 'one'),
+(19, 'ussd request trend', 'index.php/graph/trend', '', 1, 16, 'one'),
+(20, 'Admin Structures', '/index.php/Division/index', 'fa fa-sitemap', 1, 0, ''),
 (21, 'Region', '/index.php/Region/index', '', 1, 20, 'one'),
 (22, 'Division', '/index.php/Division/index', '', 1, 20, 'one'),
 (23, 'City', '/index.php/City/index', '', 1, 20, 'one'),
-(24, 'Sectors', '/index.php/Sector/index', '', 1, 0, ''),
+(24, 'Sectors', '/index.php/Sector/index', 'glyphicon glyphicon-grain', 1, 0, ''),
 (25, 'Major Sector', '/index.php/Major_Sector/index', '', 1, 24, 'one'),
 (26, 'Minor Sector', '/index.php/Minor_sector/index', '', 1, 24, 'one'),
 (27, 'Daily Forecast Time', '/index.php/Daily_forecast_time/index', 'fa fa-cloud', 1, 1, 'one'),
-(31, 'Possible Impacts', '/index.php/Impacts/index', '', 1, 0, ''),
-(32, 'Seasons', '/index.php/Season_names/index', '', 1, 0, ''),
-(33, 'Possible Advisories', '/index.php/Possible_advisories/index', '', 1, 0, ''),
-(34, 'Seasonal Terminologies', '/index.php/Terminologies/index', '', 1, 0, ''),
+(31, 'Possible Impacts', '/index.php/Impacts/index', 'fa fa-compress', 1, 0, ''),
+(32, 'Seasons', '/index.php/Season_names/index', 'fa fa-cloud', 1, 0, ''),
+(33, 'Possible Advisories', '/index.php/Possible_advisories/index', 'fa fa-check-square', 1, 0, ''),
+(34, 'Seasonal Terminologies', '/index.php/Terminologies/index', '', 0, 0, ''),
 (35, 'SUB-REGIONS', '/index.php/Sub_region/index', '', 1, 20, 'one'),
 (36, 'Daily Advisory', '/index.php/Advisory/daily', '', 1, 8, 'one'),
 (37, 'Dekadal Advisory', '/index.php/Advisory/dekadal', '', 1, 8, 'one'),
-(38, 'Seasonal Advisory', '/index.php/Advisory/index', '', 1, 8, 'one');
+(38, 'Seasonal Advisory', '/index.php/Advisory/index', '', 1, 8, 'one'),
+(39, 'USSD Menu Settings', '/index.php/USSD/index', 'fa fa-tablet', 1, 0, 'USSD menu'),
+(40, 'User Management', '/index.php/Landing/user_list', 'fa fa-users', 1, 0, 'User management');
 ");
 	
 	array_push($q,"CREATE TABLE `minor_sector` (
@@ -916,7 +926,7 @@ array_push($q,"CREATE TABLE `possible_impacts` (
 		) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 //-------------new tables-------------------
 array_push($q,"CREATE TABLE `daily_advisory` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `sector` int(5) NOT NULL,
   `forecast_id` int(11) NOT NULL,
   `advice` text NOT NULL,
@@ -925,7 +935,7 @@ array_push($q,"CREATE TABLE `daily_advisory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
 array_push($q,"CREATE TABLE `data` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `days_of_the_week` varchar(10) NOT NULL,
   `d01` double NOT NULL,
   `d02` double NOT NULL,
@@ -947,7 +957,7 @@ array_push($q,"
 		");
 
  array_push($q,"CREATE TABLE `dekadal_advisory` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `sector` int(5) NOT NULL,
   `forecast_id` int(11) NOT NULL,
   `advice` text NOT NULL,
@@ -955,7 +965,26 @@ array_push($q,"
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
-    for($i=0;$i<51;$i++){   
+
+//----------missing tables-------------------------
+  array_push($q,"CREATE TABLE `main_regions` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `region_name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+  array_push($q," CREATE TABLE `ussdtransaction_new` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `phone` varchar(100) NOT NULL,
+  `sessionId` varchar(100) NOT NULL,
+  `menuvariable` varchar(255) DEFAULT NULL,
+  `menuvalue` varchar(255) DEFAULT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `districtId` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+ 
+
+    for($i=0;$i<53;$i++){   
 	   $db =  mysqli_query($link ,$q[$i]);
 		if(!$db){
 		  echo mysqli_error($link);
