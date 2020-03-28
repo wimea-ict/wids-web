@@ -51,11 +51,8 @@
 
           var address = ''; 
           var wimea = "<br><br>"
-          wimea +='<button class="btn btn-primary col-md-12" style="margin-bottom: 10px" onclick="box()">Agriculture Sector advisory</button><br/><br/>'+
-            '<button class="btn btn-primary col-md-12" style="margin-bottom: 10px" onclick="foodbox()">Food Sector advisory</button><br/><br/>'+
-            '<button class="btn btn-primary col-md-12" style="margin-bottom: 10px" onclick="roadbox()">Road Sector advisory</button><br/><br/>'+
-            '<button class="btn btn-primary col-md-12" style="margin-bottom: 10px" onclick="waterbox()">Water Sector Advisory</button><br/>'+
-            '<br/><button class="btn btn-primary col-md-12" style="margin-bottom: 10px" onclick="healthbox()">Health Sector advisory</button>'+
+          wimea +='<button class="btn btn-primary col-md-12" style="margin-bottom: 10px" onclick="box()">Daily Forecast</button><br/><br/>'+
+            '<button class="btn btn-primary col-md-12" style="margin-bottom: 10px" onclick="roadbox()">Seasonal Forecast</button><br/><br/>'+
             '';
 
 
@@ -78,35 +75,35 @@
         function box(){
           var x = infowindowContent.children['place-name'].textContent;
           // window.alert(x); 
-          window.open("/Dissemination/index.php/map/agric/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+          window.open("/wids/index.php/map/daily/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
           
       }
 
        function healthbox(){
           var x = infowindowContent.children['place-name'].textContent;
           // window.alert(x); 
-          window.open("/Dissemination/index.php/map/health/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+          window.open("/wids/index.php/map/health/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
           
       }
 
        function waterbox(){
           var x = infowindowContent.children['place-name'].textContent;
           // window.alert(x); 
-          window.open("/Dissemination/index.php/map/water/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+          window.open("/wids/index.php/map/water/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
           
       }
 
        function roadbox(){
           var x = infowindowContent.children['place-name'].textContent;
           // window.alert(x); 
-          window.open("/Dissemination/index.php/map/road/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+          window.open("/wids/index.php/map/seasonal/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
           
       }
 
        function foodbox(){
           var x = infowindowContent.children['place-name'].textContent;
           // window.alert(x); 
-          window.open("/Dissemination/index.php/map/food/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+          window.open("/wids/index.php/map/dekadal/"+x,"_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
           
       }
         // Sets a listener on a radio button to change the filter type on Places
