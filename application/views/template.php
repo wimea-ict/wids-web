@@ -7,11 +7,11 @@
         $cur_parent = $cur_parent[0]['is_parent'];
     else
         $cur_parent = 0;
-		if($_SESSION['user_logged'] == FALSE){
+    if($_SESSION['user_logged'] == FALSE){
             // The issue is here
-			$this->session->set_flashdata("error","please log in first to view this page");
-		    redirect("index.php/auth/login");
-	}
+      $this->session->set_flashdata("error","please log in first to view this page");
+        redirect("index.php/auth/login");
+  }
 ?>
 
 <!DOCTYPE html>
@@ -19,15 +19,15 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-				<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-133419491-1"></script>
-		<script>
-		  window.dataLayer = window.dataLayer || [];
-		  function gtag(){dataLayer.push(arguments);}
-		  gtag('js', new Date());
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-133419491-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-		  gtag('config', 'UA-133419491-1');
-		</script>
+      gtag('config', 'UA-133419491-1');
+    </script>
 
         <title>Weather Information Dissemination System</title>
         <!-- Tell the browser to be responsive to screen width -->
@@ -48,8 +48,8 @@
              folder instead of downloading all of them to reduce the load. -->
         <link rel="stylesheet" href="<?php echo base_url() ?>assets/<?php echo $this->config->item('theme');?>/frameworks/adminlte/css/skins/_all-skins.min.css">
        <!-- css for date picker --->
-	   <link href="<?php echo base_url(); ?>assets/frameworks/adminlte/<?php echo $this->config->item('theme');?>/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-	   
+     <link href="<?php echo base_url(); ?>assets/frameworks/adminlte/<?php echo $this->config->item('theme');?>/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+     
            <link href="<?php echo base_url(); ?>assets/frameworks/adminlte/<?php echo $this->config->item('theme');?>/css/bootstrap-datetimepicker.css" rel="stylesheet">
         
         
@@ -95,7 +95,7 @@
                     <!-- Sidebar toggle button-->
                     
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-                        <span class="sr-only">Toggle navigation</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WEATHER INFORMATION DISSEMINATION SYSTEM (UGANDA)
+                        <span class="sr-only">Toggle navigation</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WEATHER INFORMATION DISSEMINATION SYSTEM ( <?php echo strtoupper($this->config->item('country'));?>)
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
@@ -110,20 +110,92 @@
                      <?php
                         //------------------------------------------
                           $year = date('Y');
-                         $no_data = "SELECT DISTINCT ('region.region_name,area_seasonal_forecast.region_id,area_seasonal_forecast.region_id') from area_seasonal_forecast join seasonal_forecast on seasonal_forecast.id = area_seasonal_forecast.forecast_id join region on area_seasonal_forecast.region_id = region.id where seasonal_forecast.year = '".$year."'";
-                            $no_forecasts = $this->db->query($no_data);
-                            $count = 0;
-                              $Snotification =[]; 
-                              foreach ($no_forecasts->result_array()  as $dd) {
-                                 $region_name = $dd['region_name'];
-                                 $Snotification[] = $region_name; 
+
+                          //Begins Handles checking for the seasonal forecast
+                            $sub_regions = "SELECT * FROM sub_region";
+                            $qry = $this->db->query($sub_regions);  
+                            $ids = array();
+                            $regions = array();
+                            $missing = array();
+                            foreach ($qry->result_array()  as $dd) {
+                                 $ids[] = $dd['id'];
+                                 $regions[] = $dd['sub_region_name'];
+                              }  
+                              $season = "unknown";
+                              if((date('m') == 1) || (date('m') == 2) ) $season = 'MAM';
+                              else  if((date('m') == 3) || (date('m') == 4)  || (date('m') == 5) ) $season = 'MAM';
+                              else if ((date('m') == 6) || (date('m') == 7)  || (date('m') == 8) ) $season = 'JJA';
+                              else $season = 'SOND';
+                              $ct = 0; $i=0;
+
+                              $check = "SELECT seasonal_forecast.id as id FROM seasonal_forecast LEFT OUTER JOIN season_months on seasonal_forecast.season_id = season_months.id WHERE seasonal_forecast.year = '$year' AND season_months.abbreviation = '$season' LIMIT 1";
+                               $query = $this->db->query($check);
+                               $forecast_id = 0;$exist = false;
+                               foreach ($query->result_array() as $idd) {
+                                $exist = true;
+                                 $forecast_id = $idd['id'];
+                               }
+
+                               if($exist == true){
+                                  foreach ($ids as $edid) {
+                                   $check = "SELECT * FROM area_seasonal_forecast LEFT OUTER JOIN seasonal_forecast on seasonal_forecast.id = area_seasonal_forecast.forecast_id LEFT OUTER JOIN season_months on seasonal_forecast.season_id = season_months.id WHERE seasonal_forecast.year = '$year' AND season_months.abbreviation = '$season' AND area_seasonal_forecast.language_id = 1 AND area_seasonal_forecast.subregion_id='$edid' ";
+                                   $query = $this->db->query($check);
+                                   if($query->result_array() == null){ $ct++;
+                                    // echo "string";
+                                    $missing[] = $regions[$i];
+                                   }
+                                   $i++;
+                                }
+                               }else{
+                                  $ct++;
+                               }
+                              //End Handles checking for the seasonal forecast
+
+
+
+                               //begins Handles checking for the Daily forecast
+                              $regions = "SELECT * FROM region";
+                              $qry = $this->db->query($regions);  
+                              $daily_ids = array();
+                              $daily_regions = array();
+                              $daily_missing = array();
+                              foreach ($qry->result_array()  as $dd) {
+                                  $daily_ids[] = $dd['id'];
+                                  $daily_regions[] = $dd['region_name'];
+                              } 
+                              $i=0;
+                              $today = date('Y-m-d');
+
+                              $there_is=true;
+                              $daily_forecast_id=0;
+                              $checker = "SELECT * FROM daily_forecast WHERE language_id = 1 AND date = '$today' LIMIT 1";
+                              $query = $this->db->query($checker);
+                              if($query->result_array() == null){
+                                    $there_is=false;
+                              }else{
+                                $there_is=true;
+                                foreach ($query->result_array() as $k) {
+                                  $daily_forecast_id = $k['id'];
+                                }
                               }
-                             foreach ($Snotification as $val ) {
-                                        $dd = "SELECT  distinct region_name FROM region where not region_name like '".$val."' ";
-                                        $ddd = $this->db->query($dd);
-                                        foreach ($ddd->result_array() as $rowss) {     
-                                       $count++; 
-                            }}                             
+
+                              if($there_is == true){
+                                foreach ($daily_ids as $edid) {
+                                  $check = "SELECT * FROM daily_forecast_data LEFT OUTER JOIN daily_forecast on daily_forecast.id = daily_forecast_data.forecast_id WHERE daily_forecast.language_id = 1 AND daily_forecast.date = '$today' AND daily_forecast_data.region_id = '$edid' ";
+                                  $query = $this->db->query($check);
+                                   if($query->result_array() == null){ $ct++;
+                                      $daily_missing[] = $daily_regions[$i];
+                                   }else{
+
+                                   }
+                                   $i++;
+                                }
+                              }else{
+                                $ct++;
+                              }
+                              
+                               //Ends Handles checking for the seasonal forecast
+                                              
                              ?>
             <!-- end--------------------------------------------------- -->
                              
@@ -133,48 +205,66 @@
                                 <span class="label label-pill label-danger count" style="border-radius:10px;"></span> <span class="glyphicon glyphicon-bell" style="font-size:18px;"></span>
              <!-- --------------------------new code -->
                                 <?php
-                                    if($count > 0){
+                                // $ct=0;
+                                    if($ct > 0){
                                         ?>
                                          <span class="badge" style="position: absolute; top: 5px; right: 4px; padding: 4px 6px; border-radius: 60%; background: red; color: white;">
-                                            <?php echo $count; ?></span>
+                                            <?php echo $ct; ?></span>
                                       <?php 
                                     }
                                 ?>
                 <!-- ------------------------------------- -->
                              </a>
                              <ul class="dropdown-menu">
+
+                              <?php 
+                              if($ct < 1){ ?>
+                                    <li><a href="#">All forecasts updated</b></a></li> 
+                                 <?php 
+
+                              }else{
+                                if($there_is == false){?>
+                                    <li><a href="<?php echo base_url('index.php/Daily_forecast/index') ?>" style="color: red">Daily Forecast Data Unavailable</a></li> 
+                                 <?php 
+                                }else{
+                                   if(isset($daily_missing) && sizeof($daily_missing) > 0){ ?>
+                                      <li><a href="<?php echo base_url('index.php/daily_forecast/daily_forecast_data')."/".$daily_forecast_id ?>" style="color: red">Daily Forecast Missing Region Data</a></li> 
+                                   <?php 
+                                      foreach ($daily_missing as $k) { ?>
+                                        <li><a href="<?php echo base_url('index.php/daily_forecast/addnewforecastdata').'/'.$daily_forecast_id  ?>"><?php echo $k; ?></a></li> 
+                                     <?php }
+                                  }
+                                }
+
+                                if($exist == false){ ?>
+                                      <li><a href="#" style="color: red">Seasonal Forecast Data Unavailable</a></li> 
+                                   <?php 
+
+                                }else{
+                                  if(isset($missing) && sizeof($missing) > 0){ ?>
+                                      <li><a href="<?php echo base_url('index.php/Season/showareaforecast').'/'.$forecast_id  ?>" style="color: red">Seasonal Forecast Missing Region Data</a></li> 
+                                       <?php 
+                                          foreach ($missing as $k) { ?>
+                                            <li><a href="<?php echo base_url('index.php/Season/createregionforecast').'/'.$forecast_id  ?>"><?php echo $k; ?></a></li> 
+                                         <?php }
+                                  }
+                                }
+                              }
+                              
+                               ?>
+                              
+                              </ul>
                                    
 
                  <!--==================================================================  -->
-                                    <?php
-
-                                    if($count > 0){
-                                    foreach ($Snotification as $val ) {
-                                      
-                                        $dd = "SELECT distinct region_name FROM region where not region_name like '".$val."' ";
-                                        $ddd = $this->db->query($dd);
-                                        foreach ($ddd->result_array() as $rowss) {   
-                                            ?>
-                                            <li>
-                                    <a href="#">
-                                           <?php 
-                                           echo $rowss['region_name']." seasonal forecast is missing <br/>"; ?></a>  
-                                            </li>   
-                                            <?php                                  
-                                  }
-                              }
-                             }else{
-                                     echo "No forecasts added yet!";
-                                    }
-                                
-                                    ?>
+                                    
                                  
         <!-- ================================================================================== -->
 
                                                                       
-                             </ul>
+                             
                              </li>
-                             <!-- User Account: style can be found in dropdown.less -->				<li class="dropdown user user-menu"> 
+                             <!-- User Account: style can be found in dropdown.less -->       <li class="dropdown user user-menu"> 
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="<?php echo base_url()?>assets/<?php echo $this->config->item('theme');?>/frameworks/adminlte/img/avatar5.png" class="user-image" alt="User Image">
                                     <span class="hidden-xs"><?php echo $_SESSION['username']; ?></span>
@@ -238,7 +328,7 @@
 
                         <li><?php
                             echo anchor('index.php/Landing/index/', '<i class="fa fa-laptop"></i><span>'.strtoupper("DASHBOARD").'</span>');
-							?>
+              ?>
                         </li>
                         <?php
                         //$define = ""
@@ -280,68 +370,68 @@
             <div class="content-wrapper">
             
                 <?php
-				  if($this->session->flashdata('message')){?>
-			      <div class = "alert alert-danager"><?php echo $this->session->flashdata('message');?></div>  
+          if($this->session->flashdata('message')){?>
+            <div class = "alert alert-danager"><?php echo $this->session->flashdata('message');?></div>  
                      <?php }  
               
                 if ($_SESSION['usertype'] == 'farmersrep') {
                                        
                     $this->load->view("feedback");
                 }
-				else if($change == 1){
-				$this->load->view("daily_forecast_form");
+        else if($change == 1){
+        $this->load->view("daily_forecast_form");
 
 
-				  }else if($change == 0){
+          }else if($change == 0){
 
                     $this->load->view("landing_index");
 
-				}else if($change == 3){
-				$this->load->view("daily_forecast_list.php");
+        }else if($change == 3){
+        $this->load->view("daily_forecast_list.php");
 
 
-				}else if($change == 4){
-				 $this->load->view("decadal_forecast_list.php");
+        }else if($change == 4){
+         $this->load->view("decadal_forecast_list.php");
 
 
-				}else if($change == 2 || $change == 12){
-				
-				 $this->load->view("decadal_forecast_list");
+        }else if($change == 2 || $change == 12){
+        
+         $this->load->view("decadal_forecast_list");
 
-				}
-				else if($change == 5){
+        }
+        else if($change == 5){
 
-				 $this->load->view("advisory_list.php");
+         $this->load->view("advisory_list.php");
 
-				}
-				else if($change == 6 || $change==7 || $change == 22 || $change== 23){
-				 $this->load->view("advisory_form");
-				
-				}
-				else if($change == 8){
-				 $this->load->view("admin_advisory_read");
-				
-				}
-				else if($change == 9){
-				 $this->load->view("advisory_change");
-				}
-				else if($change == 10){
-				 $this->load->view("daily_forecast_read");
-				}
-				else if($change == 11){
-				 $this->load->view( 'decadal_forecast_read');
-				}else if($change == 13){
-				 $this->load->view( 'daily_forecast_read');
-				}
-				else if($change == 14){
-				 $this->load->view( 'season_form');
-				}
-				else if($change == 15){
-				 $this->load->view( 'season_list');
-				}
-				else if($change == 16){
-				 $this->load->view( 'season_read');
-				}else if($change == 17){
+        }
+        else if($change == 6 || $change==7 || $change == 22 || $change== 23){
+         $this->load->view("advisory_form");
+        
+        }
+        else if($change == 8){
+         $this->load->view("admin_advisory_read");
+        
+        }
+        else if($change == 9){
+         $this->load->view("advisory_change");
+        }
+        else if($change == 10){
+         $this->load->view("daily_forecast_read");
+        }
+        else if($change == 11){
+         $this->load->view( 'decadal_forecast_read');
+        }else if($change == 13){
+         $this->load->view( 'daily_forecast_read');
+        }
+        else if($change == 14){
+         $this->load->view( 'season_form');
+        }
+        else if($change == 15){
+         $this->load->view( 'season_list');
+        }
+        else if($change == 16){
+         $this->load->view( 'season_read');
+        }else if($change == 17){
                     $this->load->view( 'feedback');
                 }else if($change == 18 || $change == 19){
                     $this->load->view( 'user_feedback_list');
@@ -393,20 +483,20 @@
                 else if($change == 45){
                     $this->load->view('trend_graph');
                 }
-				else if($change == 46){
+        else if($change == 46){
                     $this->load->view('region_view');
                 }
                else if($change == 47){
                     $this->load->view('division_view');
                 }
-				else if($change == 48){
+        else if($change == 48){
                     $this->load->view('city_view');
                 }
-				
-				else if($change == 49){
+        
+        else if($change == 49){
                     $this->load->view('region_form');
                 }
-				else if($change == 50){
+        else if($change == 50){
                     $this->load->view('division_form');
                 }
                 else if($change == 51){
@@ -418,10 +508,10 @@
                 else if($change == 53){
                     $this->load->view('terminology_form');
                 }
-				else if($change == 54){
+        else if($change == 54){
                     $this->load->view('sub_region_view');
                 }
-				else if($change == 55){
+        else if($change == 55){
                     $this->load->view('sub_region_form');
                 }
                 else if($change == 61){
@@ -436,7 +526,7 @@
                 else if($change == 64){
                     $this->load->view('minor_form');
                 }//end of major and minor sector views
-				else if($change == 65){
+        else if($change == 65){
                     $this->load->view('daily_forecast_time_view');
                 }
                 else if($change == 66){
@@ -469,16 +559,16 @@
                 else if($change == 75){
                     $this->load->view('advisories_list');
                 }   
-				 else if($change == 76){
+         else if($change == 76){
                     $this->load->view('area_decadal_list');
                 }
-				 else if($change == 77){
+         else if($change == 77){
                     $this->load->view('decadal_area_form');
                 }
-				else if($change == 78){
-				  $this->load->view('daily_forecast_data_list');
-				}else if($change == 79){
-				  $this->load->view('daily_forecast_data_form');
+        else if($change == 78){
+          $this->load->view('daily_forecast_data_list');
+        }else if($change == 79){
+          $this->load->view('daily_forecast_data_form');
                 }
                 else if($change == 80){
                     $this->load->view('forecast_impact_data_list');
@@ -509,6 +599,19 @@
                   }else if($change == 91){
                     $this->load->view('CSV_view');
                   }
+
+
+
+//////////////////////////////////// AMoko//////////////////////////////////////
+                  else if($change == 92){
+                    $this->load->view('audio_clip_list');
+                  }
+                  else if($change == 93){
+                    $this->load->view('audio_clip');
+                  }
+//////////////////////////////////// AMoko//////////////////////////////////////
+
+
                 ?>
                 
             </div><!-- /.content-wrapper -->
@@ -528,13 +631,13 @@
         </div><!-- ./wrapper -->
 
         
-		<!-- link for date picker -->
-		<!--<script src="<?php echo base_url(); ?>assets/frameworks/adminlte/js/bootstrap-datetimepicker.min.js"></script> -->
+    <!-- link for date picker -->
+    <!--<script src="<?php echo base_url(); ?>assets/frameworks/adminlte/js/bootstrap-datetimepicker.min.js"></script> -->
        <script src="<?php echo base_url(); ?>assets/<?php echo $this->config->item('theme');?>/frameworks/adminlte/js/bootstrap-datetimepicker.js"></script>
-	   <!-- page script -->
-	   <script>
-	     $(function(){
-			 $(".form_datetime").datetimepicker({
+     <!-- page script -->
+     <script>
+       $(function(){
+       $(".form_datetime").datetimepicker({
         format: "yyyy-mm-dd",
         autoclose: true,
         todayBtn: true,
@@ -542,29 +645,29 @@
         minuteStep: 60
     });
 
-		 });
-		  $("#date_from").change(function() {
-			  var selection=$("#date_from").val();
-			  //$("#date_to").val(selection);
-			  var date1 = new Date(selection);
-			  var diffDays = Math.ceil(10 * (1000 * 3600 * 24)); 
-			  var newd = Math.abs(date1.getTime() + diffDays);
-			  var det = new Date(newd);
-			  var month = (det.getMonth() + 1);
-			  var dt =  det.getDate();
-			      if (dt < 10) {
+     });
+      $("#date_from").change(function() {
+        var selection=$("#date_from").val();
+        //$("#date_to").val(selection);
+        var date1 = new Date(selection);
+        var diffDays = Math.ceil(10 * (1000 * 3600 * 24)); 
+        var newd = Math.abs(date1.getTime() + diffDays);
+        var det = new Date(newd);
+        var month = (det.getMonth() + 1);
+        var dt =  det.getDate();
+            if (dt < 10) {
                   dt = '0' + dt;
                     }
                  if (month < 10) {
                      month = '0' + month;
                    }
 
-			  var fin =   det.getFullYear() + '-' + month + '-' + dt ;
-			  $("#date_to").val(fin);
-			   $("#date_s").val(fin);
-			 
-		  });
-	   </script>
+        var fin =   det.getFullYear() + '-' + month + '-' + dt ;
+        $("#date_to").val(fin);
+         $("#date_s").val(fin);
+       
+      });
+     </script>
         <script>
             $("#pic").change(function() {
 
@@ -613,7 +716,7 @@
             });
             
             $(".treeview").on("click")({
-		 $(".treeview").addClass("active");
+     $(".treeview").addClass("active");
             });
 
 
