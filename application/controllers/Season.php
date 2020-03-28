@@ -20,8 +20,18 @@ class Season extends CI_Controller
 		  $this->load->model('Sub_region_model');
     }
 
+    public function index()
+    { 
+	$season = $this->Season_model->get_all();
+	//print_r($season); exit;
+	$data = array(
+            'season_data' => $season,
+			'change' => 15
+        );
 
-///////////////////////// Amoko///////////////////
+        $this->load->view('template', $data);
+    }
+
     public function audio_list()
     { 
         $data = array(
@@ -97,21 +107,13 @@ class Season extends CI_Controller
         
 
     }
-///////////////////////// Amoko///////////////////
 
 
 
-    public function index()
-    { 
-	$season = $this->Season_model->get_all();
-	//print_r($season); exit;
-	$data = array(
-            'season_data' => $season,
-			'change' => 15
-        );
 
-        $this->load->view('template', $data);
-    }
+
+
+
 	public function wording()
     {
         header("Content-type: application/vnd.ms-word");
@@ -710,13 +712,9 @@ class Season extends CI_Controller
             //-------2020 changes------------------//
             $this->Season_model->delete1($id);
 			$season = $this->Season_model->get_all();
-			$data = array(
-			'season_data' => $season,
-            'forecast_area_data'=> $this->Season_model->get_forecast_area(),
-		   'change'   => 73,
-	    );
+			$this->index();
+	   
             $this->session->set_flashdata('message', '<font color="green" size="5">Delete Record Success</font>');
-             $this->load->view('template', $data);
         
     }
     public function remove_file($pp)

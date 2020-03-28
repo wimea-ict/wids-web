@@ -20,6 +20,7 @@ class Auth extends CI_Controller {
      $this->load->model('Season_model');
      $this->load->model('Decadal_forecast_model');
      $this->load->model('Daily_forecast_model');
+      $this->load->model('Coastline_forecast_model');
 	 $this->load->model('Language_model');
 	 $this->load->model('Division_model');//Forecast_time_model
 	 $this->load->model('Forecast_time_model');
@@ -199,8 +200,10 @@ class Auth extends CI_Controller {
          $data['country_name'] = $country;
          $division_text = $this->Division_model->get_divisionName_data($id);
          $data['division_text']= $division_text;
-         $random = rand(1, 8);
+         $random = rand(1, 3);
          //-----------------SEASONAL DATA--------------------
+         //////////////////////////new  product//////////////////////
+          $data['coastline_forecast'] = $this->Coastline_forecast_model->get_all();
          //advice query
 	     $data['seasonal_advice_home'] = $this->Season_model->get_advice($random);
          $season_home = $this->Season_model->get_current_season(); 
@@ -862,6 +865,7 @@ class Auth extends CI_Controller {
 (2, 'Dekadal forecast', '/index.php/Dekadal_forecast/index', 'fa fa-cloud', 1, 1, 'one'),
 (3, 'Daily Forecast', '/index.php/Daily_forecast/index', 'fa fa-cloud', 1, 1, 'one'),
 (4, 'Seasonal Forecast', '/index.php/season/index', 'fa fa-cloud', 1, 1, 'one'),
+(5, 'Marine Forecast', '/index.php/Coastline_forecast/index', 'fa fa-cloud', 1, 1, 'one'),
 (8, 'Advisories', '/index.php/Advisory/index', 'fa fa-check-square-o', 1, 0, 'one'),
 (12, 'Forecast Advice', '/index.php/user_feedback/index', 'ion-android-mail', 1, 5, 'one'),
 (14, 'forecast graphs', '/index.php/graph/index', 'ion-arrow-graph-up-right', 0, 0, 'one'),
@@ -971,6 +975,29 @@ array_push($q,"
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `region_name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+ 
+
+  array_push($q," CREATE TABLE `coastline_forecast` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `valid_date` varchar(255) NOT NULL,
+  `issue_date` varchar(255) NOT NULL,
+  `duty_forecaster` varchar(255) NOT NULL,
+  `sea_state` varchar(255) NOT NULL,
+  `warning` text NOT NULL,
+  `surface_wind_24` varchar(255) NOT NULL,
+  `surface_wind_48` varchar(255) NOT NULL,
+  `visibility_24` varchar(255) NOT NULL,
+  `visibility_48` varchar(255) NOT NULL,
+  `temp_24` varchar(255) NOT NULL,
+  `temp_48` varchar(255) NOT NULL,
+  `height_24` varchar(255) NOT NULL,
+  `height_48` varchar(255) NOT NULL,
+  `wave_24` varchar(233) NOT NULL,
+  `wave_48` varchar(255) NOT NULL,
+  `current_24` varchar(255) NOT NULL,
+  `current_48` varchar(255) NOT NULL,
+  `weather` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
   array_push($q," CREATE TABLE `ussdtransaction_new` (
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -981,10 +1008,19 @@ array_push($q,"
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `districtId` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+ 
+   array_push($q," CREATE TABLE `ussdmenulanguage` (
+  `id` int(11) NOT NULL,
+  `language` varchar(100) NOT NULL,
+  `language_text_table` varchar(255) NOT NULL,
+  `forecast_table` varchar(100) NOT NULL,
+  `daily` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+ 
 
  
 
-    for($i=0;$i<53;$i++){   
+    for($i=0;$i<55;$i++){   
 	   $db =  mysqli_query($link ,$q[$i]);
 		if(!$db){
 		  echo mysqli_error($link);

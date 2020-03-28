@@ -24,6 +24,42 @@ class Daily_forecast extends CI_Controller
         $this->load->model('Minor_model');
     }
 
+    public function delete1()
+    {   $id = $this->uri->segment(3);
+        $data['change'] =3;
+            $this->Daily_forecast_model->delete1($id);
+            $this->session->set_flashdata('message', '<font color="green" size="5">Deleted Record Success</font>');
+            $this->index();
+
+    }
+    public function updated($id)
+    {   
+        
+        
+        $id = $this->uri->segment(3);
+        $data = array(
+            'daily_forecasted' => $this->Daily_forecast_model->get_update($id),
+            'change' => 36
+        );
+        $this->load->view('template', $data);
+
+
+    }
+    public function save_update(){
+        $id = $this->uri->segment(3);
+        $weather = $this->input->post('weather',TRUE);
+        $datatoupdate = array(
+             'issuedate' => $this->input->post('issuedate',TRUE),
+             'validitytime' => $this->input->post('validitytime',TRUE),
+             'date' => $this->input->post('date_forecasted',TRUE),
+             'weather'=>$this->input->post('weather',TRUE)
+             );
+        $this->Daily_forecast_model->updating($id, $datatoupdate);
+        $this->session->set_flashdata('message', '<font color="green" size="5">Update Record Success</font>');
+        $this->index();
+
+    }
+
 //index function 
 
     public function index()

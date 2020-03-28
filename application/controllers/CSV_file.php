@@ -18,6 +18,46 @@ class CSV_file extends CI_Controller
 
 //index function 
 
+public function converter()
+{
+     //$dir = 'assets/frameworks/adminlte/img/'.$filename;  
+    //$pdf_file = 'assets/frameworks/adminlte/img/test.pdf';
+    $pdf_file = fopen("assets/frameworks/adminlte/img/test.pdf", "r") or die("Unable to open file!");
+echo fread($pdf_file,filesize("test.pdf"));
+fclose($pdf_file);
+
+if (!is_readable($pdf_file)) {
+        print("Error: file does not exist or is not readable: $pdf_file\n");
+        return;
+}
+
+$c = curl_init();
+
+$cfile = curl_file_create($pdf_file, 'assets/frameworks/adminlte/img/');
+
+$apikey = '1mryuygw0ww2 '; // from https://pdftables.com/api
+curl_setopt($c, CURLOPT_URL, "https://pdftables.com/api?key=$apikey&format=csv");
+curl_setopt($c, CURLOPT_POSTFIELDS, array('file' => $cfile));
+curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($c, CURLOPT_FAILONERROR,true);
+curl_setopt($c, CURLOPT_ENCODING, "gzip,deflate");
+
+$result = curl_exec($c);
+
+if (curl_errno($c) > 0) {
+    print('Error calling PDFTables: '.curl_error($c).PHP_EOL);
+} else {
+  // save the CSV we got from PDFTables to a file
+  file_put_contents ($pdf_file . ".csv", $result);
+}
+
+curl_close($c);
+ }
+
+
+
+
+
     public function index()
     {
         // echo dirname('file.xlsx');
@@ -125,7 +165,7 @@ class CSV_file extends CI_Controller
                     'wind_direction'=> $wind_dir[$m],
                     'wind_strength' => $wind_str[$m],
                     'region_id'     => ($m+1),
-                    'weather_cat_id'=> $wet_cat,
+                    'weather_cat_id'=> ($wet_cat=="")? 10: $wet_cat,
                     'forecast_id'   => $this->CSV_model->get_recent_forecast()->id
                 );
                 $this->CSV_model->insert_daily_data($data_to_insert2);
