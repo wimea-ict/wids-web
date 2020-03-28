@@ -103,6 +103,26 @@ class Daily_forecast_model extends CI_Model
        return $query->result_array();
   }
     //-----------------------------------------------------
+
+//-----------------advisories map-----------------------
+     function get_map_advice($division){
+      $dateadded = date('Y-m-d');
+        $this->db->select('division.division_name, minor_sector.minor_name, daily_advisory.message_summary, division.division_name, daily_advisory.advice,daily_forecast.date');
+        $this->db->from('daily_advisory');
+        $this->db->join('daily_forecast_data', 'daily_advisory.forecast_id = daily_forecast_data.forecast_id');
+        $this->db->join('daily_forecast','daily_forecast.id = daily_advisory.forecast_id');
+        $this->db->join('division','daily_forecast_data.region_id = division.region_id');
+        $this->db->join('minor_sector','minor_sector.id = daily_advisory.sector');
+        $this->db->order_by('daily_advisory.id','DESC');
+        $this->db->where('division.division_name', $division);
+        $this->db->where("daily_forecast.language_id", 1); 
+        $this->db->where('daily_forecast.date', $dateadded);
+        $qy = $this->db->get();
+        return $qy->result_array();
+
+    }
+
+  
 	//------advisories--------------------------------
    function get_advice($division){
       $dateadded = date('Y-m-d');
