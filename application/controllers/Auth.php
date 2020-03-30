@@ -999,6 +999,30 @@ array_push($q,"
   `weather` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
+   array_push($q," CREATE TABLE `ussdmenulanguage` (
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `language` varchar(100) NOT NULL,
+  `language_text_table` varchar(255) NOT NULL,
+  `forecast_table` varchar(100) NOT NULL,
+  `daily` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+
+   array_push($q,"CREATE TABLE `voice` (
+   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `language_id` int(11) NOT NULL,
+  `voice_name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+
+
+   array_push($q,"CREATE TABLE `voice_requests` (
+    `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `phone` varchar(255) NOT NULL,
+  `language_id` int(50) NOT NULL,
+  `sessionID` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
   array_push($q," CREATE TABLE `ussdtransaction_new` (
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `phone` varchar(100) NOT NULL,
@@ -1009,18 +1033,14 @@ array_push($q,"
   `districtId` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
  
-   array_push($q," CREATE TABLE `ussdmenulanguage` (
-  `id` int(11) NOT NULL,
-  `language` varchar(100) NOT NULL,
-  `language_text_table` varchar(255) NOT NULL,
-  `forecast_table` varchar(100) NOT NULL,
-  `daily` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+  
+
+
  
 
  
 
-    for($i=0;$i<55;$i++){   
+    for($i=0;$i<57;$i++){   
 	   $db =  mysqli_query($link ,$q[$i]);
 		if(!$db){
 		  echo mysqli_error($link);
