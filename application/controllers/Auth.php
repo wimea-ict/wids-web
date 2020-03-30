@@ -1033,14 +1033,18 @@ array_push($q,"
   `districtId` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
  
-  
+ 
 
-
+  array_push($q,"  CREATE TABLE `ussdmenu` (
+  `menuname` varchar(200) DEFAULT NULL,
+  `menuid` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `menudescription` varchar(300) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
  
 
  
 
-    for($i=0;$i<57;$i++){   
+    for($i=0;$i<58;$i++){   
 	   $db =  mysqli_query($link ,$q[$i]);
 		if(!$db){
 		  echo mysqli_error($link);
