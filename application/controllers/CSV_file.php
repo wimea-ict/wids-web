@@ -18,51 +18,47 @@ class CSV_file extends CI_Controller
 
 //index function 
 
-public function converter()
-{
-     //$dir = 'assets/frameworks/adminlte/img/'.$filename;  
-    //$pdf_file = 'assets/frameworks/adminlte/img/test.pdf';
-    $pdf_file = fopen("assets/frameworks/adminlte/img/test.pdf", "r") or die("Unable to open file!");
-echo fread($pdf_file,filesize("test.pdf"));
-fclose($pdf_file);
-
-if (!is_readable($pdf_file)) {
-        print("Error: file does not exist or is not readable: $pdf_file\n");
-        return;
-}
-
-$c = curl_init();
-
-$cfile = curl_file_create($pdf_file, 'assets/frameworks/adminlte/img/');
-
-$apikey = '1mryuygw0ww2 '; // from https://pdftables.com/api
-curl_setopt($c, CURLOPT_URL, "https://pdftables.com/api?key=$apikey&format=csv");
-curl_setopt($c, CURLOPT_POSTFIELDS, array('file' => $cfile));
-curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($c, CURLOPT_FAILONERROR,true);
-curl_setopt($c, CURLOPT_ENCODING, "gzip,deflate");
-
-$result = curl_exec($c);
-
-if (curl_errno($c) > 0) {
-    print('Error calling PDFTables: '.curl_error($c).PHP_EOL);
-} else {
-  // save the CSV we got from PDFTables to a file
-  file_put_contents ($pdf_file . ".csv", $result);
-}
-
-curl_close($c);
- }
-
-
-
-
-
     public function index()
     {
-        // echo dirname('file.xlsx');
-        // $_FILES['file'
-       if ( $xlsx = SimpleXLSX::parse( $_FILES['file']['tmp_name'] )) {
+        
+        $pdf_file = $_FILES['file2']['tmp_name'];
+        $actual_name =  substr($_FILES['file2']['name'], 0, -4);
+
+        if (!is_readable($pdf_file)) {
+                print("Error: file does not exist or is not readable: $pdf_file\n");
+                return;
+        }else{
+            // print( base_url()."File was accessed");
+        }
+
+        $c = curl_init();
+
+        $cfile = curl_file_create($pdf_file, 'application/pdf');
+        //---------calling the conversion api---------------------------------------
+        $apikey = 'kjaa6hpycnnj'; // from https://pdftables.com/api
+        curl_setopt($c, CURLOPT_URL, "https://pdftables.com/api?key=$apikey&format=xlsx-single");
+        curl_setopt($c, CURLOPT_POSTFIELDS, array('file' => $cfile));
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($c, CURLOPT_FAILONERROR,true);
+        curl_setopt($c, CURLOPT_ENCODING, "gzip,deflate");
+
+        $result = curl_exec($c);
+
+        if (curl_errno($c) > 0) {
+            // print('Error calling PDFTables: '.curl_error($c).PHP_EOL);
+            $data['change'] = 3;
+            $this->session->set_flashdata('message', '<font color="green" size="5">Conversion Failed, Out of Conversion Units</font>');
+            $this->load->view('template',$data);
+
+        } else {
+          // save the CSV we got from PDFTables to a file
+            $local = "/var/www/html/wids/Conversions/".$actual_name.".xlsx";
+              file_put_contents ($local, $result);
+        }
+
+        curl_close($c);
+
+       if ( $xlsx = SimpleXLSX::parse( $local )) {
 
             // output worsheet 1
 
