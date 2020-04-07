@@ -1,4 +1,4 @@
-
+<!--amoko  Replace whole file -->
         <!-- Main content -->
         <section class="content-header">
                     <h1>
@@ -18,8 +18,9 @@
               <div class='box'>
                 <div class='box-header'>
                   <h3 class='box-title'>DAILY FORECAST LIST 
-		<?php echo anchor(site_url('index.php/daily_forecast/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
-		<?php echo anchor(site_url('index.php/daily_forecast/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?> <?php echo anchor(site_url('index.php/daily_forecast/addnew'), '<i class="fa fa-file-pdf-o"></i> Add New', 'class="btn btn-primary btn-sm"'); ?>
+    <?php echo anchor(site_url('index.php/daily_forecast/word'), '<i class="fa fa-file-word-o"></i> Word', 'class="btn btn-primary btn-sm"'); ?>
+    <?php echo anchor(site_url('index.php/daily_forecast/pdf'), '<i class="fa fa-file-pdf-o"></i> PDF', 'class="btn btn-primary btn-sm"'); ?> <?php echo anchor(site_url('index.php/daily_forecast/addnew'), '<i class="fa fa-file-pdf-o"></i> Add New', 'class="btn btn-primary btn-sm"');
+    echo " ".anchor(site_url('index.php/daily_forecast/pdf_uploader'), '<i class="fa fa-file-pdf-o"></i> PDF Uploader', 'class="btn btn-primary btn-sm"'); ?>
         
         </h3> 
         
@@ -45,46 +46,46 @@
             <th>Forecast Time</th>
             <th>Issue Date</th>
             <th>Validity</th>
-		    <th>Duty Forecaster</th>
-		    <th>Weather Summary</th>
+        <th>Duty Forecaster</th>
+        <th>Weather Summary</th>
             <th>Language</th>
-		    <th>Action</th>
+        <th>Action</th>
            </tr>
             </thead>
-	    <tbody>
+      <tbody>
             <?php
             $start = 0;
-			if(isset($daily_forecast_data)){
+      if(isset($daily_forecast_data)){
             foreach ($daily_forecast_data as $p)
             {   ?>
                 <tr>
-		    <td><?php echo ++$start ?></td>
-			<td><?php  echo $p['date']; ?></td>			
-			<td><?php echo $p['time']; ?></td>
-			<td><?php echo $p['issuedate']; ?></td>
-			<td><?php echo $p['validitytime']; ?></td>
-			<td><?php echo $p['dutyforecaster']; ?></td>			
-			<td><?php echo $p['weather']; ?></td>
+        <td><?php echo ++$start ?></td>
+      <td><?php  echo $p['date']; ?></td>     
+      <td><?php echo $p['time']; ?></td>
+      <td><?php echo $p['issuedate']; ?></td>
+      <td><?php echo $p['validitytime']; ?></td>
+      <td><?php echo $p['dutyforecaster']; ?></td>      
+      <td><?php echo $p['weather']; ?></td>
             <td><?php echo $p['language']; ?></td>
-			<td style="text-align:center" width="140px">
-			<?php
-										 
-					 echo anchor(site_url('index.php/daily_forecast/daily_forecast_data/'.$p['id']),'<i class="fa fa-cloud"></i>',array('title'=>'Area forecast','class'=>'btn btn-primary btn-sm')); 
+      <td style="text-align:center" width="140px">
+      <?php
+                     
+           echo anchor(site_url('index.php/daily_forecast/daily_forecast_data/'.$p['id']),'<i class="fa fa-cloud"></i>',array('title'=>'Area forecast','class'=>'btn btn-primary btn-sm')); 
                     echo '  ';
                     echo anchor(site_url('index.php/Forecast_impact/daily_impacts_data/'.$p['id']),'<i class="fa  fa-exclamation"></i>',array('title'=>'Forecast Impacts','class'=>'btn btn-primary btn-sm')); 
-			        echo '  ';
-			        echo anchor(site_url('index.php/daily_forecast/update/'.$p['id']),'<i class="fa fa-pencil-square-o"></i>',array('title'=>'edit','class'=>'btn btn-primary btn-sm'));
-			        echo '  ';
-			        echo anchor(site_url('index.php/daily_forecast/delete/'.$p['id']),'<i class="fa fa-trash-o"></i>','title="delete" class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Are You Sure ?\')"');
-			      echo anchor(site_url('index.php/Advisory/daily1/'.$p['id']) ,'<i class=" ion-android-mail" style="margin-left:10px;"></i>',array('title'=>'Advisory','class'=>'class="btn btn-primary btn-sm"')); 
+              echo '  ';
+              echo anchor(site_url('index.php/daily_forecast/updated/'.$p['id']),'<i class="fa fa-pencil-square-o"></i>',array('title'=>'edit','class'=>'btn btn-primary btn-sm'));
+              echo '  ';
+              echo anchor(site_url('index.php/daily_forecast/delete1/'.$p['id']),'<i class="fa fa-trash-o"></i>','title="delete" class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Are You Sure ?\')"');
+            echo anchor(site_url('index.php/Advisory/daily1/'.$p['id']) ,'<i class=" ion-android-mail" style="margin-left:10px;"></i>',array('title'=>'Advisory','class'=>'class="btn btn-primary btn-sm"')); 
 ///////////////// amoko////////////////////////
-			?>
-		    </td>
-	        </tr>
+      ?>
+        </td>
+          </tr>
                 <?php
             }
-			
-			}
+      
+      }
             ?>
             </tbody>
         </table>
@@ -97,10 +98,7 @@
             });
         </script>
           <div class="box-tools pull-right">
-       <?php
-       echo anchor('index.php/daily_forecast/create2_1/','Archive',array('class'=>'btn btn-primary btn-sm'));
-	
-?>
+       
        
        </div>
                     </div><!-- /.box-body -->
