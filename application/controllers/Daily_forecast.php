@@ -74,6 +74,12 @@ class Daily_forecast extends CI_Controller
         $this->load->view('template', $data);
     }
 
+
+    public function pdf_uploader()
+    {
+        $data['change'] = 105;
+        $this->load->view('template', $data);
+    }
       public function addnew()
     {
         $data['daily_forecast_data']= $this->Daily_forecast_model->get_all_replaced();
