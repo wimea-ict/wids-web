@@ -1,0 +1,181 @@
+/* CSS Document */
+
+.card {
+	/* Add shadows to create the "card" effect */
+	box-shadow: 0 4px 8px 0 rgba(8,8,8,1);
+	transition: 0.3s;
+	//height: 80px;
+
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+	box-shadow: 0 8px 16px 0 rgba(10,10,10,0.2);
+	width: 120%;
+	height: 120%;
+}
+.container {
+	padding: 0;
+	margin: 0;
+	left:0;
+
+}
+.col-bg-style{
+
+	border:1px solid black;
+	background-color:#f0f0f5;
+	border-radius:5%;
+	margin-top: 75px;
+
+}
+.col-center-style{
+	left: 0px;
+	border:1px solid black;
+	margin-top: 0px;
+    height: 100%;
+    min-height: 590px;
+    padding: -10px;
+    text-align: center;
+}
+
+.weather-icon-container{
+    border-top: 1px solid black ;
+    margin-top: 60px;
+    padding-top: 20px;
+}
+
+.left-col{
+	/*background-image:url('images/1index.jpeg');*/
+	background-color:#e0e0eb;
+	height:100%;
+	min-height:900px;
+	padding-top: 0px;
+	text-align: left;
+	text-align: center;
+	margin-left: 0px;
+	border:1px solid black;
+	min-width:100px;
+	color:white;
+}
+.header-style{
+	width:100%;
+	padding: 5px;
+	background-color:black;
+	text-align: center;
+	color:white;
+
+
+}
+
+
+.margin-style{
+	margin-left:1px;
+}
+.container-style{
+	background-image:url('images/1index.jpeg');
+
+	text-align: center;
+	width: 99%;
+    height: 100%;
+
+
+}
+.card-style{
+
+	background-image: url();
+	background-size: cover;
+
+}/*
+ul.tabs {
+	display: table;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	width: auto;
+}
+
+ul.tabs>li {
+	float: left;
+	padding: 3px;
+
+}
+
+ul.tabs>li:hover {
+	background-color: #f0f5f5;
+}
+
+
+ul.tabs>li.selected {
+	background-color: #f0f5f5;
+}
+ul.tabs>li:active{
+	color: #f0f5f5;
+}
+
+div.content {
+
+	padding-left:0px;
+	text-align:left;
+	margin-top:30px;
+
+}*/
+/* new..*/
+
+
+.tabbed{
+	float : left;
+	width : 100%;
+
+}
+.tabsize{
+	height:800px;
+}
+
+.tabbed > input{
+	display : none;
+}
+.bl{
+	background-color :red;
+
+}
+.tabbed > section > h1{
+	float       : left;
+	box-sizing  : border-box;
+	margin      : 0;
+	padding     : 0.5em 0.5em 0;
+	overflow    : hidden;
+	font-size   : 1em;
+	font-weight : normal;
+
+}
+
+.tabbed > input:first-child + section > h1{
+	padding-left : 1em;
+}
+
+
+
+.tabbed > section > div{
+	position      : relative;
+	z-index       : 1;
+	float         : right;
+	box-sizing    : border-box;
+	width         : 100%;
+	margin        : 2.5em 0 0 -100%;
+	padding       : 0.5em 0.75em;
+	border        : 1px solid #ddd;
+	border-radius : 4px;
+	box-shadow    : 0 0 0.5em rgba(0,0,0,0.0625);
+	background    : #fff;
+}
+
+.tabbed > input:checked + section > h1{
+	position : relative;
+	
+	
+}
+
+.tabbed > input:not(:checked) + section > div{
+	display : none;
+}
+

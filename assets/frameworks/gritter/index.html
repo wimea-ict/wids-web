@@ -1,0 +1,293 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jQuery Gritter Plugin Demos</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="css/jquery.gritter.css" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="js/jquery.gritter.js"></script>
+<style type="text/css">
+	body {
+		background:#e74c3c;
+		color:#fff;
+    font-family:"roboto",Arial, Helvetica, sans-serif
+	}
+	a {
+		color:#00ff00;
+	}
+	#container {
+		width:728px;
+		background:#333;
+		padding:10px;
+	}
+</style>
+</head>
+
+
+<body>
+<div id="container">
+	<h1>jQuery Gritter Plugin Demos</h1>
+    <div class="jquery-script-ads" style="margin:20px auto;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-2783044520727903";
+/* jQuery_demo */
+google_ad_slot = "2780937993";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+	<ul>
+		<li>
+			<a href="#" id="add-regular">Add regular notification</a>: Fades out after a certain amount of time, can be set for each notification.
+		</li>
+		<li>
+			<a href="#" id="add-sticky">Add sticky notification</a>: Doesn't run on a fade timer.  Just sits there until the user manually removes it by clicking on the (X).
+		</li>
+		<li>
+			<a href="#" id="add-without-image">Add notification without image</a>
+		</li>
+        <li>
+            <a href="#" id="add-gritter-light">Add a white notification</a>: has a 'gritter-light' class_name applied to it.
+        </li>
+		<li>
+			<a href="#" id="add-with-callbacks">Add notification (with callbacks)</a>
+		</li>
+		<li>
+			<a href="#" id="add-sticky-with-callbacks">Add a sticky notification (with callbacks)</a>
+		</li>
+        <li>
+            <a href="#" id="add-max">Add notification with max of 3</a>: If there are 3 messages already on screen, it won't show another one.
+        </li>
+		<li>
+			<a href="#" id="remove-all">Remove all notifications</a>
+		</li>
+		<li>
+			<a href="#" id="remove-all-with-callbacks">Remove all notifications (with callbacks)</a>
+		</li>
+	</ul>
+</div>
+
+<script type="text/javascript">
+
+	$(function(){
+
+		// global setting override
+        /*
+		$.extend($.gritter.options, {
+		    class_name: 'gritter-light', // for light notifications (can be added directly to $.gritter.add too)
+		    position: 'bottom-left', // possibilities: bottom-left, bottom-right, top-left, top-right
+			fade_in_speed: 100, // how fast notifications fade in (string or int)
+			fade_out_speed: 100, // how fast the notices fade out
+			time: 3000 // hang on the screen for...
+		});
+        */
+
+		$('#add-sticky').click(function(){
+
+			var unique_id = $.gritter.add({
+				// (string | mandatory) the heading of the notification
+				title: 'This is a sticky notice!',
+				// (string | mandatory) the text inside the notification
+				text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eget tincidunt velit. Cum sociis natoque penatibus et <a href="#" style="color:#ccc">magnis dis parturient</a> montes, nascetur ridiculus mus.',
+				// (string | optional) the image to display on the left
+				image: 'images/confirm.png',
+				// (bool | optional) if you want it to fade out on its own or just sit there
+				sticky: true,
+				// (int | optional) the time you want it to be alive for before fading out
+				time: '',
+				// (string | optional) the class name you want to apply to that specific message
+				class_name: 'my-sticky-class'
+			});
+
+			// You can have it return a unique id, this can be used to manually remove it later using
+			/*
+			setTimeout(function(){
+
+				$.gritter.remove(unique_id, {
+					fade: true,
+					speed: 'slow'
+				});
+
+			}, 6000)
+			*/
+
+			return false;
+
+		});
+
+		$('#add-regular').click(function(){
+
+			$.gritter.add({
+				// (string | mandatory) the heading of the notification
+				title: 'This is a regular notice!',
+				// (string | mandatory) the text inside the notification
+				text: 'This will fade out after a certain amount of time. Vivamus eget tincidunt velit. Cum sociis natoque penatibus et <a href="#" style="color:#ccc">magnis dis parturient</a> montes, nascetur ridiculus mus.',
+				// (string | optional) the image to display on the left
+				image: 'images/confirm.png',
+				// (bool | optional) if you want it to fade out on its own or just sit there
+				sticky: false,
+				// (int | optional) the time you want it to be alive for before fading out
+				time: ''
+			});
+
+			return false;
+
+		});
+
+        $('#add-max').click(function(){
+
+            $.gritter.add({
+                // (string | mandatory) the heading of the notification
+                title: 'This is a notice with a max of 3 on screen at one time!',
+                // (string | mandatory) the text inside the notification
+                text: 'This will fade out after a certain amount of time. Vivamus eget tincidunt velit. Cum sociis natoque penatibus et <a href="#" style="color:#ccc">magnis dis parturient</a> montes, nascetur ridiculus mus.',
+                // (string | optional) the image to display on the left
+                image: 'images/confirm.png',
+                // (bool | optional) if you want it to fade out on its own or just sit there
+                sticky: false,
+                // (function) before the gritter notice is opened
+                before_open: function(){
+                    if($('.gritter-item-wrapper').length == 3)
+                    {
+                        // Returning false prevents a new gritter from opening
+                        return false;
+                    }
+                }
+            });
+
+            return false;
+
+        });
+
+		$('#add-without-image').click(function(){
+
+			$.gritter.add({
+				// (string | mandatory) the heading of the notification
+				title: 'This is a notice without an image!',
+				// (string | mandatory) the text inside the notification
+				text: 'This will fade out after a certain amount of time. Vivamus eget tincidunt velit. Cum sociis natoque penatibus et <a href="#" style="color:#ccc">magnis dis parturient</a> montes, nascetur ridiculus mus.'
+			});
+
+			return false;
+		});
+
+        $('#add-gritter-light').click(function(){
+
+            $.gritter.add({
+                // (string | mandatory) the heading of the notification
+                title: 'This is a light notification',
+                // (string | mandatory) the text inside the notification
+                text: 'Just add a "gritter-light" class_name to your $.gritter.add or globally to $.gritter.options.class_name',
+                class_name: 'gritter-light'
+            });
+
+            return false;
+        });
+
+		$('#add-with-callbacks').click(function(){
+
+			$.gritter.add({
+				// (string | mandatory) the heading of the notification
+				title: 'This is a notice with callbacks!',
+				// (string | mandatory) the text inside the notification
+				text: 'The callback is...',
+				// (function | optional) function called before it opens
+				before_open: function(){
+					alert('I am called before it opens');
+				},
+				// (function | optional) function called after it opens
+				after_open: function(e){
+					alert("I am called after it opens: \nI am passed the jQuery object for the created Gritter element...\n" + e);
+				},
+				// (function | optional) function called before it closes
+				before_close: function(e, manual_close){
+                    var manually = (manual_close) ? 'The "X" was clicked to close me!' : '';
+					alert("I am called before it closes: I am passed the jQuery object for the Gritter element... \n" + manually);
+				},
+				// (function | optional) function called after it closes
+				after_close: function(e, manual_close){
+                    var manually = (manual_close) ? 'The "X" was clicked to close me!' : '';
+					alert('I am called after it closes. ' + manually);
+				}
+			});
+
+			return false;
+		});
+
+		$('#add-sticky-with-callbacks').click(function(){
+
+			$.gritter.add({
+				// (string | mandatory) the heading of the notification
+				title: 'This is a sticky notice with callbacks!',
+				// (string | mandatory) the text inside the notification
+				text: 'Sticky sticky notice.. sticky sticky notice...',
+				// Stickeh!
+				sticky: true,
+				// (function | optional) function called before it opens
+				before_open: function(){
+					alert('I am a sticky called before it opens');
+				},
+				// (function | optional) function called after it opens
+				after_open: function(e){
+					alert("I am a sticky called after it opens: \nI am passed the jQuery object for the created Gritter element...\n" + e);
+				},
+				// (function | optional) function called before it closes
+				before_close: function(e){
+					alert("I am a sticky called before it closes: I am passed the jQuery object for the Gritter element... \n" + e);
+				},
+				// (function | optional) function called after it closes
+				after_close: function(){
+					alert('I am a sticky called after it closes');
+				}
+			});
+
+			return false;
+
+		});
+
+		$("#remove-all").click(function(){
+
+			$.gritter.removeAll();
+			return false;
+
+		});
+
+		$("#remove-all-with-callbacks").click(function(){
+
+			$.gritter.removeAll({
+				before_close: function(e){
+					alert("I am called before all notifications are closed.  I am passed the jQuery object containing all  of Gritter notifications.\n" + e);
+				},
+				after_close: function(){
+					alert('I am called after everything has been closed.');
+				}
+			});
+			return false;
+
+		});
+
+
+	});
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

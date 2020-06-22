@@ -1,0 +1,35 @@
+# Configuration file for Gammu SMS Daemon
+
+# Gammu library configuration, see gammurc(5)
+[gammu]
+port = /dev/ttyUSB0
+connection = at9600
+logfile = /var/log/gammu/gammu.log
+logformat = textall
+
+[smsd]
+Service = sql
+Driver = native_mysql
+#PIN = 1234
+User = dev
+Password = dev
+PC = localhost
+Database = dissemination
+skipsmscnumber = +255713800880
+debugLevel = 255
+LogFile = /var/log/gammu/smsd.log
+DeliveryReport = sms
+#DeliveryReportDelay = 7200
+CheckSecurity = 0
+
+InboxFormat = unicode
+OutboxFormat = unicode
+TransmitFormat = auto
+
+InboxPath = /var/spool/gammu/inbox/
+OutboxPath = /var/spool/gammu/outbox/
+SentSMSPath = /var/spool/gammu/sent/
+ErrorSMSPath = /var/spool/gammu/error/
+
+runonreceive = /var/www/html/dissemination/scripts/daemon.sh
+
