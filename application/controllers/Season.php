@@ -777,16 +777,16 @@ class Season extends CI_Controller
         exit();
     }
 	
-	public function list()
-    { 
-	$season = $this->Season_model->get_all();
-	$data = array(
-            'season_data' => $season,
-			'change' => 15
-        );
+	// public function list()
+ //    { 
+	// $season = $this->Season_model->get_all();
+	// $data = array(
+ //            'season_data' => $season,
+	// 		'change' => 15
+ //        );
 
-        $this->load->view('template', $data);
-    }
+ //        $this->load->view('template', $data);
+ //    }
 
     public function word()
     {
